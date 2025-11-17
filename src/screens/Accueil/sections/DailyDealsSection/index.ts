@@ -1,0 +1,1 @@
+export { DailyDealsSection } from "./DailyDealsSection";

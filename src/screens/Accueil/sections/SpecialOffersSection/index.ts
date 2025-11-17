@@ -1,0 +1,1 @@
+export { SpecialOffersSection } from "./SpecialOffersSection";
