@@ -1,41 +1,16 @@
+// src/screens/Accueil/sections/BestSellersSection/BestSellersSection.tsx
 import React from "react";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
+import { Product } from "../../../../types";
 
-const products = [
-  {
-    id: 1,
-    name: "Instax Mini 11",
-    price: "15 000 FCFA",
-    description: "Selfie mode, selfie mirror, macro mode",
-    image: "/image-10-1.png",
-    rating: "/five-stars-8.png",
-    reviews: "(121)",
-    leftPosition: "left-[54px]",
-  },
-  {
-    id: 2,
-    name: "Airpods Max",
-    price: "15 000 FCFA",
-    description: "Canvas, full grain leather",
-    image: "/image-18.png",
-    rating: "/five-stars-9.png",
-    reviews: "(121)",
-    leftPosition: "left-[507px]",
-  },
-  {
-    id: 3,
-    name: "adidas sneakers",
-    price: "15 000 FCFA",
-    description: "x Sean Wotherspoon Superstar sneakers",
-    image: "/sambaa-1.png",
-    rating: "/five-stars-10.png",
-    reviews: "(121)",
-    leftPosition: "left-[960px]",
-  },
-];
+interface Props {
+  products: Product[];
+}
 
-export const BestSellersSection = (): JSX.Element => {
+export const BestSellersSection = ({ products }: Props): JSX.Element => {
+  const positions = ["left-[54px]", "left-[507px]", "left-[960px]"];
+
   return (
     <section className="w-full flex flex-col py-6">
       <h2 className="ml-[54px] [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] whitespace-nowrap">
@@ -43,21 +18,17 @@ export const BestSellersSection = (): JSX.Element => {
       </h2>
 
       <div className="relative mt-[35px] h-[508px]">
-        {products.map((product, index) => (
+        {products.slice(0, 3).map((product, index) => (
           <div
             key={product.id}
-            className={`absolute top-[11px] ${product.leftPosition} w-[424px]`}
+            className={`absolute top-[11px] ${positions[index]} w-[424px]`}
           >
             <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
               <CardContent className="p-0 relative h-[304px]">
                 <img
-                  className={`absolute top-0 ${
-                    index === 2
-                      ? "top-[111px] left-[58px] w-[326px] h-[152px]"
-                      : "left-[60px] w-[303px] h-[304px]"
-                  } object-cover`}
+                  className="absolute top-0 left-[60px] w-[303px] h-[304px] object-cover"
                   alt={product.name}
-                  src={product.image}
+                  src={product.imageUrls[0] || "/image-10-1.png"}
                 />
 
                 <button className="absolute top-3.5 left-[379px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center border-0 cursor-pointer hover:bg-gray-50 transition-colors">
@@ -76,22 +47,24 @@ export const BestSellersSection = (): JSX.Element => {
                   {product.name}
                 </h3>
                 <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap">
-                  {product.price}
+                  {product.price.toLocaleString()} FCFA
                 </p>
               </div>
 
-              <p className="mt-[9px] [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
+              <p className="mt-[9px] [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal] line-clamp-2">
                 {product.description}
               </p>
 
               <div className="flex items-center gap-[11px] mt-[22px]">
-                <img
-                  className="w-[102px] h-[15px]"
-                  alt="Rating"
-                  src={product.rating}
-                />
+                <div className="flex">
+                  {[...Array(5)].map((_, i) => (
+                    <span key={i} className={i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"}>
+                      ★
+                    </span>
+                  ))}
+                </div>
                 <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
-                  {product.reviews}
+                  ({product.rating})
                 </span>
               </div>
 

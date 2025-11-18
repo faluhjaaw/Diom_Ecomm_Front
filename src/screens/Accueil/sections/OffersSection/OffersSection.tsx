@@ -1,6 +1,9 @@
+// src/screens/Accueil/sections/OffersSection/OffersSection.tsx
 import { ChevronDownIcon, SearchIcon } from "lucide-react";
-import React from "react";
+import React, { useState } from "react";
 import { Input } from "../../../../components/ui/input";
+import { productService } from "../../../../services/product.service";
+import { useNavigate } from "react-router-dom";
 
 const navigationItems = [
   { label: "Category", hasDropdown: true },
@@ -9,6 +12,16 @@ const navigationItems = [
 ];
 
 export const OffersSection = (): JSX.Element => {
+  const [searchQuery, setSearchQuery] = useState("");
+  const navigate = useNavigate();
+
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/products?search=${searchQuery}`);
+    }
+  };
+
   return (
     <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3">
       <div className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0" />
@@ -30,16 +43,20 @@ export const OffersSection = (): JSX.Element => {
         ))}
       </nav>
 
-      <div className="relative ml-[70px] flex-shrink-0">
+      <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">
         <div className="w-[370.06px] h-[52.47px] shadow-[0px_3px_14.77px_#00000040] rounded-[26.24px]">
           <Input
             type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Recherchez un produit..."
             className="w-full h-full bg-white rounded-[26.24px] border-0 pl-[29px] pr-[60px] [font-family:'Montserrat',Helvetica] font-semibold text-[10.5px] placeholder:text-[#c2c6cc]"
           />
-          <SearchIcon className="absolute top-1/2 right-[20px] -translate-y-1/2 w-[18px] h-[18px] text-[#333333]" />
+          <button type="submit" className="absolute top-1/2 right-[20px] -translate-y-1/2">
+            <SearchIcon className="w-[18px] h-[18px] text-[#333333]" />
+          </button>
         </div>
-      </div>
+      </form>
 
       <div className="flex items-center gap-[11px] ml-auto">
         <img

@@ -1,6 +1,12 @@
-import React from "react";
+// src/screens/Accueil/sections/DailyDealsSection/DailyDealsSection.tsx
+import React, { useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
+import { Product } from "../../../../types";
+
+interface Props {
+  products: Product[];
+}
 
 const categories = [
   { label: "Gadgets", active: false },
@@ -12,90 +18,13 @@ const categories = [
   { label: "Sneakers", active: false },
 ];
 
-const products = [
-  {
-    id: 1,
-    name: "Airpods Max",
-    description: "Un équilibre parfait d'un son haute fidélité",
-    price: "15 000 FCFA",
-    rating: "/five-stars.png",
-    reviews: "(121)",
-    image: "/image-1-2.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 2,
-    name: "Étui floral ordi",
-    description: "15 in. x 10 in. -Flap top closure",
-    price: " 5 000 FCFA",
-    rating: "/five-stars-2.png",
-    reviews: "(121)",
-    image: "/image-5.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 3,
-    name: "Homepod mini",
-    description: "5 couleurs disponibles",
-    price: "10 000 FCFA",
-    rating: "/five-stars-4.png",
-    reviews: "(121)",
-    image: "/image-7.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 4,
-    name: "Ipad MIni",
-    description: "Un équilibre parfait d'un son haute fidélité",
-    price: "500 000 FCFA",
-    rating: "/five-stars-6.png",
-    reviews: "(121)",
-    image: "/image-9.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 5,
-    name: "Airpods Max",
-    description: "Un équilibre parfait d'un son haute fidélité",
-    price: "15 000 FCFA",
-    rating: "/five-stars-1.png",
-    reviews: "(121)",
-    image: "/image-1-2.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 6,
-    name: "Étui floral ordi",
-    description: "15 in. x 10 in. -Flap top closure",
-    price: " 5 000 FCFA",
-    rating: "/five-stars-3.png",
-    reviews: "(121)",
-    image: "/image-5.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 7,
-    name: "Homepod mini",
-    description: "5 couleurs disponibles",
-    price: "10 000 FCFA",
-    rating: "/five-stars-5.png",
-    reviews: "(121)",
-    image: "/image-7.png",
-    heartIcon: "/image-2-11.png",
-  },
-  {
-    id: 8,
-    name: "Ipad MIni",
-    description: "Un équilibre parfait d'un son haute fidélité",
-    price: "500 000 FCFA",
-    rating: "/five-stars-7.png",
-    reviews: "(121)",
-    image: "/image-9.png",
-    heartIcon: "/image-2-11.png",
-  },
-];
+export const DailyDealsSection = ({ products }: Props): JSX.Element => {
+  const [activeCategory, setActiveCategory] = useState("Education");
 
-export const DailyDealsSection = (): JSX.Element => {
+  const handleAddToCart = (productId: string) => {
+    console.log('Ajout au panier:', productId);
+  };
+
   return (
     <section className="w-full py-8 px-14">
       <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-8">
@@ -107,8 +36,9 @@ export const DailyDealsSection = (): JSX.Element => {
           <Button
             key={index}
             variant="outline"
+            onClick={() => setActiveCategory(category.label)}
             className={`h-auto px-7 py-3.5 rounded-[42.72px] border-[1.42px] border-[#33333333] shadow-[0px_2.85px_8.69px_#0000001a] ${
-              category.active ? "bg-[#86dcff]" : "bg-white"
+              activeCategory === category.label ? "bg-[#86dcff]" : "bg-white"
             }`}
           >
             <span className="[text-shadow:0px_2.41px_30.79px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[18.5px] tracking-[0] leading-[normal] whitespace-nowrap">
@@ -126,13 +56,13 @@ export const DailyDealsSection = (): JSX.Element => {
                 <img
                   className="w-full h-[303px] object-cover"
                   alt={product.name}
-                  src={product.image}
+                  src={product.imageUrls[0] || "/image-1-2.png"}
                 />
                 <button className="absolute top-[13px] right-[13px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center">
                   <img
                     className="w-5 h-[17px] object-cover"
                     alt="Favorite"
-                    src={product.heartIcon}
+                    src="/image-2-11.png"
                   />
                 </button>
               </CardContent>
@@ -142,27 +72,30 @@ export const DailyDealsSection = (): JSX.Element => {
               {product.name}
             </h3>
 
-            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal] mb-2">
+            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal] mb-2 line-clamp-2">
               {product.description}
             </p>
 
             <div className="flex items-center gap-2 mb-3">
-              <img
-                className="w-[102px] h-[15px]"
-                alt="Rating"
-                src={product.rating}
-              />
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className={i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"}>
+                    ★
+                  </span>
+                ))}
+              </div>
               <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
-                {product.reviews}
+                ({product.rating})
               </span>
             </div>
 
             <p className="font-semibold text-[#333333] text-xl whitespace-nowrap [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] tracking-[0] leading-[normal] mb-4">
-              {product.price}
+              {product.price.toLocaleString()} FCFA
             </p>
 
             <Button
               variant="outline"
+              onClick={() => handleAddToCart(product.id)}
               className="h-auto w-[181px] py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]"
             >
               <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">

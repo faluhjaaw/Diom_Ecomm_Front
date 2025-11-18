@@ -1,4 +1,7 @@
-import React from "react";
+// src/screens/Accueil/Accueil.tsx
+import React, { useEffect, useState } from "react";
+import { productService } from "../../services/product.service";
+import { categoryService } from "../../services/category.service";
 import { BestSellersSection } from "./sections/BestSellersSection";
 import { BoutiqueSection } from "./sections/BoutiqueSection";
 import { BrandShowcaseSection } from "./sections/BrandShowcaseSection";
@@ -13,62 +16,49 @@ import { ProductGridSection } from "./sections/ProductGridSection";
 import { PromotionsSection } from "./sections/PromotionsSection";
 import { SpecialOffersSection } from "./sections/SpecialOffersSection";
 
-const footerCategories = [
-  { label: "Fashion" },
-  { label: "Education" },
-  { label: "Livres" },
-  { label: "Jouets" },
-  { label: "Meubles" },
-];
-
-const footerAboutUs = [
-  { label: "Fashion" },
-  { label: "Education" },
-  { label: "Livres" },
-  { label: "Jouets" },
-  { label: "Meubles" },
-];
-
-const footerServices = [
-  { label: "Carte cadeau" },
-  { label: "Mobile App" },
-  { label: "Shipping & delivery" },
-  { label: "Order & Pickup" },
-  { label: "Account Signup" },
-];
-
-const footerHelp = [
-  { label: "Shopcart Help" },
-  { label: "Returns" },
-  { label: "Track Orders" },
-  { label: "Contact us" },
-  { label: "Feedback" },
-];
-
-const paymentMethods = [
-  { src: "/image-18-2.png", alt: "Payment method 1" },
-  { src: "/image-20.png", alt: "Payment method 2" },
-  { src: "/image-20-2.png", alt: "Payment method 3" },
-];
-
-const socialLinks = [
-  { label: "Deviens vendeur" },
-  { label: "Deviens vendeur" },
-  { label: "Deviens vendeur" },
-];
-
 export const Accueil = (): JSX.Element => {
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const [productsRes, categoriesRes] = await Promise.all([
+          productService.getAll(),
+          categoryService.getAll(),
+        ]);
+        setProducts(productsRes.data);
+        setCategories(categoriesRes.data);
+      } catch (error) {
+        console.error('Erreur chargement données:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-2xl">Chargement...</div>
+      </div>
+    );
+  }
+
   return (
     <div className="bg-white overflow-hidden w-full min-w-[1440px] flex flex-col">
       <OffersSection />
       <LandingPageSection />
-      <CategorySection />
-      <DailyDealsSection />
+      <CategorySection categories={categories} />
+      <DailyDealsSection products={products.slice(0, 8)} />
       <BrandShowcaseSection />
       <SpecialOffersSection />
       <PromotionsSection />
       <BoutiqueSection />
-      <BestSellersSection />
+      <BestSellersSection products={products.slice(8, 11)} />
       <FeaturedProductsSection />
 
       <section className="w-full px-[54px] py-8">
@@ -100,12 +90,12 @@ export const Accueil = (): JSX.Element => {
               Categories
             </h4>
             <div className="flex flex-col gap-6">
-              {footerCategories.map((item, index) => (
+              {categories.slice(0, 5).map((cat: any) => (
                 <div
-                  key={`category-${index}`}
+                  key={cat.id}
                   className="[text-shadow:0px_2px_23px_#00000026] font-normal text-[13px] [font-family:'Inter',Helvetica] text-[#333333] tracking-[0] leading-[normal]"
                 >
-                  {item.label}
+                  {cat.name}
                 </div>
               ))}
             </div>
@@ -116,12 +106,12 @@ export const Accueil = (): JSX.Element => {
               About us
             </h4>
             <div className="flex flex-col gap-6">
-              {footerAboutUs.map((item, index) => (
+              {['Fashion', 'Education', 'Livres', 'Jouets', 'Meubles'].map((item, index) => (
                 <div
-                  key={`about-${index}`}
+                  key={index}
                   className="[text-shadow:0px_2px_23px_#00000026] font-normal text-[13px] [font-family:'Inter',Helvetica] text-[#333333] tracking-[0] leading-[normal]"
                 >
-                  {item.label}
+                  {item}
                 </div>
               ))}
             </div>
@@ -132,12 +122,12 @@ export const Accueil = (): JSX.Element => {
               Services
             </h4>
             <div className="flex flex-col gap-6">
-              {footerServices.map((item, index) => (
+              {['Carte cadeau', 'Mobile App', 'Shipping & delivery', 'Order & Pickup', 'Account Signup'].map((item, index) => (
                 <div
-                  key={`service-${index}`}
+                  key={index}
                   className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]"
                 >
-                  {item.label}
+                  {item}
                 </div>
               ))}
             </div>
@@ -148,12 +138,12 @@ export const Accueil = (): JSX.Element => {
               Help
             </h4>
             <div className="flex flex-col gap-6">
-              {footerHelp.map((item, index) => (
+              {['Shopcart Help', 'Returns', 'Track Orders', 'Contact us', 'Feedback'].map((item, index) => (
                 <div
-                  key={`help-${index}`}
+                  key={index}
                   className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]"
                 >
-                  {item.label}
+                  {item}
                 </div>
               ))}
             </div>
@@ -187,40 +177,17 @@ export const Accueil = (): JSX.Element => {
               />
             </div>
           </div>
-          <div className="flex gap-[27px]">
-            <div className="w-20 h-[42px] flex bg-white rounded-[10px] overflow-hidden border-[1.22px] border-solid border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]">
-              <img
-                className="mt-[5px] w-[30px] h-[31.68px] ml-[25px] object-cover"
-                alt="Payment method"
-                src="/image-18-2.png"
-              />
-            </div>
-            <div className="w-20 h-[42px] bg-white rounded-[10px] border-[1.22px] border-solid border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] flex items-center justify-center">
-              <img
-                className="w-6 h-7 object-cover"
-                alt="Payment method"
-                src="/image-20.png"
-              />
-            </div>
-            <div className="w-20 h-[42px] flex bg-white rounded-[10px] overflow-hidden border-[1.22px] border-solid border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]">
-              <img
-                className="mt-[9px] w-[46px] h-6 ml-[17px] object-cover"
-                alt="Payment method"
-                src="/image-20-2.png"
-              />
-            </div>
-          </div>
         </div>
 
         <div className="flex items-center gap-[205px] pt-8">
-          {socialLinks.map((link, index) => (
+          {['Deviens vendeur', 'Deviens vendeur', 'Deviens vendeur'].map((link, index) => (
             <div
-              key={`social-${index}`}
+              key={index}
               className="flex items-center gap-[35px]"
             >
               <div className="w-6 h-6 bg-[#1071b5] rounded-xl shadow-[0px_1.07px_6.19px_#00000026]" />
               <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
-                {link.label}
+                {link}
               </span>
             </div>
           ))}

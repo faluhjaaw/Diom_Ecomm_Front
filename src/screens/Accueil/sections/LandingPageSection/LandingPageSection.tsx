@@ -34,17 +34,9 @@ export const LandingPageSection = (): JSX.Element => {
       <img
         className="absolute top-0 left-0 w-full h-full object-cover"
         alt="Bg stage"
-        src="/bg-stage-1.png"
+        src="/images/Landing.png"
       />
 
-      {productImages.map((image, index) => (
-        <img
-          key={index}
-          className={image.className}
-          alt={image.alt}
-          src={image.src}
-        />
-      ))}
 
       <div className="absolute top-[141px] left-[55px] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-[70px] tracking-[0] leading-[normal]">
         Shopping And <br />
