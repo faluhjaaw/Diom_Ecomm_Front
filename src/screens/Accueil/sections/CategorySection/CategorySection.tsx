@@ -1,5 +1,6 @@
 // src/screens/Accueil/sections/CategorySection/CategorySection.tsx
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Category {
   id: string;
@@ -13,6 +14,11 @@ interface Props {
 
 export const CategorySection = ({ categories }: Props): JSX.Element => {
   const defaultImage = "/furniture-1.png";
+  const navigate = useNavigate();
+
+  const handleCategoryClick = (categoryId: string) => {
+    navigate(`/products?category=${categoryId}`);
+  };
 
   return (
     <section className="w-full py-6 px-12">
@@ -24,6 +30,7 @@ export const CategorySection = ({ categories }: Props): JSX.Element => {
         {categories.slice(0, 6).map((category) => (
           <div
             key={category.id}
+            onClick={() => handleCategoryClick(category.id)}
             className="relative w-full aspect-[194/250] bg-[#d9d9d9] rounded-[20px] overflow-hidden shadow-[0px_2px_10.8px_#00000040] cursor-pointer hover:opacity-90 transition-opacity"
           >
             <img

@@ -1,5 +1,6 @@
 // src/services/auth.service.ts
 import { api } from '../lib/axios';
+import { User } from '../types';
 
 export const authService = {
   register1: (email: string) =>
@@ -26,4 +27,14 @@ export const authService = {
 
   logout: (token: string) =>
     api.post('/authentication/api/auth/logout', { token }),
+
+  getCurrentUser: () =>
+    api.get<User>('/authentication/api/auth/me'),
+
+  updateProfile: (data: {
+    prenom: string;
+    nom: string;
+    telephone: string;
+    adresse: string;
+  }) => api.put('/authentication/api/auth/profile', data),
 };

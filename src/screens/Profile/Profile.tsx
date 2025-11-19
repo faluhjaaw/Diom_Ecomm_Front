@@ -25,16 +25,23 @@ export const Profile = (): JSX.Element => {
       return;
     }
 
-    // TODO: Charger les données utilisateur depuis le backend
-    // Pour l'instant, données fictives
-    setFormData({
-      prenom: "Prénom",
-      nom: "Nom",
-      email: "user@example.com",
-      telephone: "+221 XX XXX XX XX",
-      adresse: "Adresse complète",
-    });
-  }, []);
+    const loadUserData = async () => {
+      try {
+        const { data } = await authService.getCurrentUser();
+        setFormData({
+          prenom: data.prenom,
+          nom: data.nom,
+          email: data.email,
+          telephone: data.telephone,
+          adresse: data.adresse,
+        });
+      } catch (error) {
+        console.error("Erreur chargement profil:", error);
+      }
+    };
+
+    loadUserData();
+  }, [navigate]);
 
   const handleLogout = async () => {
     try {
@@ -56,7 +63,12 @@ export const Profile = (): JSX.Element => {
     setLoading(true);
 
     try {
-      // TODO: Implémenter la mise à jour du profil
+      await authService.updateProfile({
+        prenom: formData.prenom,
+        nom: formData.nom,
+        telephone: formData.telephone,
+        adresse: formData.adresse,
+      });
       alert("Profil mis à jour avec succès");
       setEditing(false);
     } catch (error) {

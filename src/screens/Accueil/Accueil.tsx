@@ -1,5 +1,6 @@
 // src/screens/Accueil/Accueil.tsx
 import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { productService } from "../../services/product.service";
 import { categoryService } from "../../services/category.service";
 import { BestSellersSection } from "./sections/BestSellersSection";
@@ -20,6 +21,7 @@ export const Accueil = (): JSX.Element => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -93,7 +95,8 @@ export const Accueil = (): JSX.Element => {
               {categories.slice(0, 5).map((cat: any) => (
                 <div
                   key={cat.id}
-                  className="[text-shadow:0px_2px_23px_#00000026] font-normal text-[13px] [font-family:'Inter',Helvetica] text-[#333333] tracking-[0] leading-[normal]"
+                  onClick={() => navigate(`/products?category=${cat.id}`)}
+                  className="[text-shadow:0px_2px_23px_#00000026] font-normal text-[13px] [font-family:'Inter',Helvetica] text-[#333333] tracking-[0] leading-[normal] cursor-pointer hover:text-[#1071b5] transition-colors"
                 >
                   {cat.name}
                 </div>
@@ -180,14 +183,19 @@ export const Accueil = (): JSX.Element => {
         </div>
 
         <div className="flex items-center gap-[205px] pt-8">
-          {['Deviens vendeur', 'Deviens vendeur', 'Deviens vendeur'].map((link, index) => (
+          {[
+            { label: 'Deviens vendeur', path: '/register' },
+            { label: 'Nos services', path: '/products' },
+            { label: 'Contact', path: '/profile' }
+          ].map((link, index) => (
             <div
               key={index}
-              className="flex items-center gap-[35px]"
+              onClick={() => navigate(link.path)}
+              className="flex items-center gap-[35px] cursor-pointer hover:opacity-80 transition-opacity"
             >
               <div className="w-6 h-6 bg-[#1071b5] rounded-xl shadow-[0px_1.07px_6.19px_#00000026]" />
               <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
-                {link}
+                {link.label}
               </span>
             </div>
           ))}

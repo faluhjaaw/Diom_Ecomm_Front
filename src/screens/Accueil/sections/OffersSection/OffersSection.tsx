@@ -24,16 +24,23 @@ export const OffersSection = (): JSX.Element => {
 
   return (
     <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3">
-      <div className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0" />
+      <div
+        onClick={() => navigate('/')}
+        className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
+      />
 
-      <div className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0">
+      <div
+        onClick={() => navigate('/')}
+        className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer">
         ShopSen
       </div>
 
       <nav className="flex items-center gap-10 ml-[55px]">
         {navigationItems.map((item, index) => (
           <div key={index} className="flex items-center gap-[3.6px]">
-            <button className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            <button
+              onClick={() => navigate('/products')}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
               {item.label}
             </button>
             {item.hasDropdown && (
@@ -60,22 +67,28 @@ export const OffersSection = (): JSX.Element => {
 
       <div className="flex items-center gap-[11px] ml-auto">
         <img
-          className="w-[22.05px] h-[25.07px] object-cover"
+          className="w-[22.05px] h-[25.07px] object-cover cursor-pointer"
           alt="Profile"
           src="/profiiile-1.png"
+          onClick={() => navigate('/profile')}
         />
-        <button className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+        <button
+          onClick={() => navigate('/profile')}
+          className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
           Compte
         </button>
       </div>
 
       <div className="flex items-center gap-[5.7px] ml-[30.9px]">
         <img
-          className="w-[29.62px] h-[26px] object-cover"
+          className="w-[29.62px] h-[26px] object-cover cursor-pointer"
           alt="Cart"
           src="/carrt-1.png"
+          onClick={() => navigate('/cart')}
         />
-        <button className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+        <button
+          onClick={() => navigate('/cart')}
+          className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
           Panier
         </button>
       </div>

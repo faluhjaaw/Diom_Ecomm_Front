@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
 
 const productImages = [
@@ -29,6 +30,8 @@ const productImages = [
 ];
 
 export const LandingPageSection = (): JSX.Element => {
+  const navigate = useNavigate();
+
   return (
     <section className="relative w-full h-[613px] bg-[#a1d1e4]">
       <img
@@ -48,7 +51,9 @@ export const LandingPageSection = (): JSX.Element => {
         élégante et responsable.
       </p>
 
-      <Button className="absolute top-[460px] left-[55px] w-[157px] h-[52px] bg-white rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[21px] tracking-[0] leading-[normal] hover:bg-white/90">
+      <Button
+        onClick={() => navigate('/products')}
+        className="absolute top-[460px] left-[55px] w-[157px] h-[52px] bg-white rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[21px] tracking-[0] leading-[normal] hover:bg-white/90 cursor-pointer">
         Voir plus
       </Button>
     </section>

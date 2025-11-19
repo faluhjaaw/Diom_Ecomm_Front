@@ -8,8 +8,7 @@ import { CartPage } from "../screens/CartPage";
 import { Checkout } from "../screens/Checkout/Checkout";
 import { Orders } from "../screens/Orders/Orders";
 import { Profile } from "../screens/Profile/Profile";
-
-
+import { Reviews } from "../screens/Reviews/Reviews";
 
 export const router = createBrowserRouter([
   {
@@ -47,6 +46,10 @@ export const router = createBrowserRouter([
   {
     path: "/profile",
     element: <Profile />,
+  },
+  {
+    path: "/reviews",
+    element: <Reviews />,
   },
 ]);
 

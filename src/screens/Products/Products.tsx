@@ -273,18 +273,8 @@ export const Products = (): JSX.Element => {
                             alt={product.name}
                             className="w-full h-full object-cover"
                           />
-                          <button
-                            className="absolute top-3 right-3 w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center hover:bg-gray-50"
-                            onClick={(e) => {
-                              e.stopPropagation();
-                            }}
-                          >
-                            <img
-                              src="/image-2-11.png"
-                              alt="Favorite"
-                              className="w-5 h-[17px] object-cover"
-                            />
-                          </button>
+                          
+                          
                         </div>
 
                         <div className="p-5">
