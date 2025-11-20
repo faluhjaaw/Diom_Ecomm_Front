@@ -1,22 +1,40 @@
 // src/screens/Accueil/sections/OffersSection/OffersSection.tsx
 import { ChevronDownIcon, SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "../../../../components/ui/input";
 import { useNavigate } from "react-router-dom";
-
-const navigationItems = [
-  { label: "Category", hasDropdown: true }
-];
+import { categoryService } from "../../../../services/category.service";
+import { Category } from "../../../../types";
 
 export const OffersSection = (): JSX.Element => {
   const [searchQuery, setSearchQuery] = useState("");
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [categories, setCategories] = useState<Category[]>([]);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await categoryService.getAll();
+      setCategories(data);
+    } catch (error) {
+      console.error("Erreur chargement catégories:", error);
+    }
+  };
 
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
       navigate(`/products?search=${searchQuery}`);
     }
+  };
+
+  const handleCategorySelect = (categoryId: string) => {
+    navigate(`/products?category=${categoryId}`);
+    setShowCategoryDropdown(false);
   };
 
   return (
@@ -33,18 +51,39 @@ export const OffersSection = (): JSX.Element => {
       </div>
 
       <nav className="flex items-center gap-10 ml-[55px]">
-        {navigationItems.map((item, index) => (
-          <div key={index} className="flex items-center gap-[3.6px]">
+        <div className="relative">
+          <div className="flex items-center gap-[3.6px]">
             <button
-              onClick={() => navigate('/products')}
+              onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
               className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
-              {item.label}
+              Category
             </button>
-            {item.hasDropdown && (
-              <ChevronDownIcon className="w-[25.01px] h-[16.11px] text-[#333333]" />
-            )}
+            <ChevronDownIcon className="w-[25.01px] h-[16.11px] text-[#333333]" />
           </div>
-        ))}
+
+          {showCategoryDropdown && (
+            <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
+              <button
+                onClick={() => {
+                  navigate('/products');
+                  setShowCategoryDropdown(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
+              >
+                Toutes les catégories
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategorySelect(category.id)}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">

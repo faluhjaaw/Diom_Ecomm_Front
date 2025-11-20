@@ -139,7 +139,7 @@ export const Products = (): JSX.Element => {
             </div>
 
             {showCategoryDropdown && (
-              <div className="absolute top-full left-0 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
+              <div className="absolute top-full left-1/2 -translate-x-1/2 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
                 <button
                   onClick={() => {
                     setSearchParams({});
