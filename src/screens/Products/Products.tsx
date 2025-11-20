@@ -109,9 +109,13 @@ export const Products = (): JSX.Element => {
     setShowCategoryDropdown(false);
   };
 
+  const handleAddToCart = (productId: string) => {
+    console.log('Ajout au panier:', productId);
+  };
+
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-ful h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+      <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3 border-b border-gray-200">
         <div
           onClick={() => navigate('/')}
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
@@ -374,7 +378,7 @@ export const Products = (): JSX.Element => {
                             </span>
                           </div>
 
-                          <div className="flex items-center justify-between">
+                          <div className="flex items-center justify-between mb-4">
                             <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal]">
                               {product.price.toLocaleString()} FCFA
                             </p>
@@ -384,6 +388,19 @@ export const Products = (): JSX.Element => {
                               {product.condition === "REFURBISHED" && "Reconditionné"}
                             </span>
                           </div>
+
+                          <Button
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleAddToCart(product.id);
+                            }}
+                            className="h-auto w-full py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]"
+                          >
+                            <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
+                              Ajouter au panier
+                            </span>
+                          </Button>
                         </div>
                       </CardContent>
                     </Card>

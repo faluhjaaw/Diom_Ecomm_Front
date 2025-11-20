@@ -20,7 +20,7 @@ export const OffersSection = (): JSX.Element => {
   };
 
   return (
-    <header className="w-ful h-[85px] flex items-center bg-white px-7 gap-3">
+    <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3">
       <div
         onClick={() => navigate('/')}
         className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
