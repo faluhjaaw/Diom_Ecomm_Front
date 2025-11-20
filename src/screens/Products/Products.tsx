@@ -199,22 +199,9 @@ export const Products = (): JSX.Element => {
 
       <div className="max-w-[1440px] mx-auto px-12 py-8">
         <div className="mb-8">
-          <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-4">
+          <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal]">
             Catalogue de produits
           </h1>
-
-          <form onSubmit={handleSearch} className="relative max-w-[600px]">
-            <Input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Recherchez un produit..."
-              className="h-12 bg-white rounded-[26.24px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] pl-[29px] pr-[60px] [font-family:'Inter',Helvetica] text-[#333333]"
-            />
-            <button type="submit" className="absolute top-1/2 right-[20px] -translate-y-1/2">
-              <SearchIcon className="w-[18px] h-[18px] text-[#333333]" />
-            </button>
-          </form>
         </div>
 
         <div className="flex gap-8">
