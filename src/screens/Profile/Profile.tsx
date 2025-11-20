@@ -107,7 +107,7 @@ export const Profile = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+      <header className="w-full h-[85px] flex items-center bg-white px-20 gap-3 border-b border-gray-200">
         <div
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
           onClick={() => navigate("/")}

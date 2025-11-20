@@ -5,7 +5,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { orderService } from "../../services/order.service";
 import { Order } from "../../types";
-import { PackageIcon, CheckCircleIcon } from "lucide-react";
+import { PackageIcon, CheckCircleIcon, ShoppingCartIcon, UserIcon, ArrowLeftIcon } from "lucide-react";
 
 export const Orders = (): JSX.Element => {
   const navigate = useNavigate();
@@ -64,7 +64,7 @@ export const Orders = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+      <header className="w-full h-[85px] flex items-center bg-white px-20 gap-3 border-b border-gray-200">
         <div
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
           onClick={() => navigate("/")}
@@ -77,22 +77,43 @@ export const Orders = (): JSX.Element => {
         </div>
 
         <nav className="ml-auto flex items-center gap-6">
-          <button
-            onClick={() => navigate("/profile")}
-            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] hover:text-[#1071b5]"
-          >
-            Profil
-          </button>
-          <button
-            onClick={() => navigate("/cart")}
-            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] hover:text-[#1071b5]"
-          >
-            Panier
-          </button>
+          <div className="flex items-center gap-[11px]">
+            <UserIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+              onClick={() => navigate('/profile')}
+            />
+            <button
+              onClick={() => navigate("/profile")}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors"
+            >
+              Profil
+            </button>
+          </div>
+
+          <div className="flex items-center gap-[5.7px]">
+            <ShoppingCartIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+              onClick={() => navigate('/cart')}
+            />
+            <button
+              onClick={() => navigate("/cart")}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors"
+            >
+              Panier
+            </button>
+          </div>
         </nav>
       </header>
 
       <div className="max-w-[1200px] mx-auto px-12 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 mb-6 hover:opacity-80 transition-opacity"
+        >
+          <ArrowLeftIcon className="w-5 h-5 text-[#333333]" />
+          <span className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal]">
+            Retour
+          </span>
+        </button>
+
         {showSuccess && (
           <div className="mb-6 p-4 bg-green-50 border border-green-200 rounded-[20px] flex items-center gap-3">
             <CheckCircleIcon className="w-6 h-6 text-green-600" />
