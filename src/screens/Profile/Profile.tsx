@@ -5,6 +5,7 @@ import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { authService } from "../../services/auth.service";
 import { userService } from "../../services/user.service";
+import { ShoppingCartIcon, PackageIcon } from "lucide-react";
 
 export const Profile = (): JSX.Element => {
   const navigate = useNavigate();
@@ -119,18 +120,29 @@ export const Profile = (): JSX.Element => {
         </div>
 
         <nav className="ml-auto flex items-center gap-6">
-          <button
-            onClick={() => navigate("/orders")}
-            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] hover:text-[#1071b5]"
-          >
-            Mes commandes
-          </button>
-          <button
-            onClick={() => navigate("/cart")}
-            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] hover:text-[#1071b5]"
-          >
-            Panier
-          </button>
+          <div className="flex items-center gap-[11px]">
+            <PackageIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+              onClick={() => navigate('/orders')}
+            />
+            <button
+              onClick={() => navigate("/orders")}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors"
+            >
+              Mes commandes
+            </button>
+          </div>
+
+          <div className="flex items-center gap-[5.7px]">
+            <ShoppingCartIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+              onClick={() => navigate('/cart')}
+            />
+            <button
+              onClick={() => navigate("/cart")}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors"
+            >
+              Panier
+            </button>
+          </div>
         </nav>
       </header>
 
