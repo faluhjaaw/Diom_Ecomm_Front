@@ -111,87 +111,88 @@ export const Products = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
-        {/* Logo */}
-        <div className="flex items-center gap-3">
-          <div className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")} />
-          <div className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
-            ShopSen
-          </div>
+      <header className="w-ful h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+        <div
+          onClick={() => navigate('/')}
+          className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
+        />
+
+        <div
+          onClick={() => navigate('/')}
+          className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer">
+          ShopSen
         </div>
 
-        {/* Category Dropdown */}
-        <div className="relative ml-8">
-          <button
-            onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
-            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
-              Category
-            </span>
-            <ChevronDownIcon className={`w-4 h-4 text-[#333333] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
-          </button>
-
-          {showCategoryDropdown && (
-            <div className="absolute top-full left-0 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
+        <nav className="flex items-center gap-10 ml-[55px]">
+          <div className="relative">
+            <div className="flex items-center gap-[3.6px]">
               <button
-                onClick={() => {
-                  setSearchParams({});
-                  setShowCategoryDropdown(false);
-                }}
-                className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
-              >
-                Toutes les catégories
+                onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+                className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+                Category
               </button>
-              {categories.map((category) => (
+              <ChevronDownIcon className="w-[25.01px] h-[16.11px] text-[#333333]" />
+            </div>
+
+            {showCategoryDropdown && (
+              <div className="absolute top-full left-0 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
                 <button
-                  key={category.id}
-                  onClick={() => handleCategorySelect(category.id)}
+                  onClick={() => {
+                    setSearchParams({});
+                    setShowCategoryDropdown(false);
+                  }}
                   className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
                 >
-                  {category.name}
+                  Toutes les catégories
                 </button>
-              ))}
-            </div>
-          )}
-        </div>
+                {categories.map((category) => (
+                  <button
+                    key={category.id}
+                    onClick={() => handleCategorySelect(category.id)}
+                    className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
+                  >
+                    {category.name}
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        </nav>
 
-        {/* Search Bar */}
-        <form onSubmit={handleSearch} className="flex-1 mx-6 max-w-[600px]">
-          <div className="relative">
+        <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">
+          <div className="w-[370.06px] h-[52.47px] shadow-[0px_3px_14.77px_#00000040] rounded-[26.24px]">
             <Input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Headphones"
-              className="w-full h-[44px] bg-white rounded-[22px] border border-gray-300 pl-4 pr-12 [font-family:'Inter',Helvetica] text-[#333333] text-sm shadow-sm"
+              placeholder="Recherchez un produit..."
+              className="w-full h-full bg-white rounded-[26.24px] border-0 pl-[29px] pr-[60px] [font-family:'Montserrat',Helvetica] font-semibold text-[10.5px] placeholder:text-[#c2c6cc]"
             />
-            <button type="submit" className="absolute top-1/2 right-4 -translate-y-1/2">
-              <SearchIcon className="w-5 h-5 text-[#333333]" />
+            <button type="submit" className="absolute top-1/2 right-[20px] -translate-y-1/2">
+              <SearchIcon className="w-[18px] h-[18px] text-[#333333]" />
             </button>
           </div>
         </form>
 
-        {/* Right Icons */}
-        <div className="flex items-center gap-6 ml-auto">
+        <div className="flex items-center gap-[11px] ml-auto">
+          <UserIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+            onClick={() => navigate('/profile')}
+          />
           <button
             onClick={() => navigate('/profile')}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <UserIcon className="w-5 h-5 text-[#333333]" />
-            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
-              Compte
-            </span>
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Compte
           </button>
+        </div>
 
+        <div className="flex items-center gap-[5.7px] ml-[30.9px]">
+          <ShoppingCartIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+            onClick={() => navigate('/cart')}
+          />
           <button
             onClick={() => navigate('/cart')}
-            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
-          >
-            <ShoppingCartIcon className="w-5 h-5 text-[#333333]" />
-            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
-              Panier
-            </span>
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Panier
           </button>
         </div>
       </header>
