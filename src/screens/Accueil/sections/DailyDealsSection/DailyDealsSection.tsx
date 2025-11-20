@@ -3,8 +3,7 @@ import React, { useState } from "react";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Product } from "../../../../types";
-import { useCart } from "../../../../hooks/useCart";
-import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 
 interface Props {
   products: Product[];
@@ -22,15 +21,9 @@ const categories = [
 
 export const DailyDealsSection = ({ products }: Props): JSX.Element => {
   const [activeCategory, setActiveCategory] = useState("Education");
-  const { addToCart } = useCart();
-  const navigate = useNavigate();
 
-  const handleAddToCart = async (productId: string) => {
-    try {
-      await addToCart(productId, 1);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
+  const handleAddToCart = (productId: string) => {
+    console.log('Ajout au panier:', productId);
   };
 
   return (
@@ -60,31 +53,21 @@ export const DailyDealsSection = ({ products }: Props): JSX.Element => {
         {products.map((product) => (
           <div key={product.id} className="flex flex-col">
             <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0 mb-5">
-              <CardContent
-                className="p-0 relative cursor-pointer"
-                onClick={() => navigate(`/products/${product.id}`)}
-              >
+              <CardContent className="p-0 relative">
                 <img
                   className="w-full h-[303px] object-cover"
                   alt={product.name}
                   src={product.imageUrls[0] || "/image-1-2.png"}
                 />
-                <button
-                  className="absolute top-[13px] right-[13px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center z-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <img
-                    className="w-5 h-[17px] object-cover"
-                    alt="Favorite"
-                    src="/image-2-11.png"
-                  />
+                <button className="absolute top-[13px] right-[13px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center"
+                onClick={(e) => e.stopPropagation()}>
+                  
+                  <Heart />
                 </button>
               </CardContent>
             </Card>
 
-            <h3
-              onClick={() => navigate(`/products/${product.id}`)}
-              className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap mb-1 cursor-pointer hover:text-[#1071b5] transition-colors">
+            <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap mb-1">
               {product.name}
             </h3>
 

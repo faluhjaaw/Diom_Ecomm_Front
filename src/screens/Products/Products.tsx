@@ -6,7 +6,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { productService } from "../../services/product.service";
 import { categoryService } from "../../services/category.service";
 import { Product, Category } from "../../types";
-import { SearchIcon, FilterIcon } from "lucide-react";
+import { SearchIcon, FilterIcon, ChevronDownIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
 
 export const Products = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -16,7 +16,8 @@ export const Products = (): JSX.Element => {
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
-  
+  const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+
   const [filters, setFilters] = useState({
     categoryId: searchParams.get("category") || "",
     minPrice: searchParams.get("minPrice") || "",
@@ -103,12 +104,95 @@ export const Products = (): JSX.Element => {
     setSearchParams({});
   };
 
+  const handleCategorySelect = (categoryId: string) => {
+    setSearchParams({ category: categoryId });
+    setShowCategoryDropdown(false);
+  };
+
   return (
     <div className="min-h-screen bg-white">
       <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
-        <div className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")} />
-        <div className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
-          ShopSen
+        {/* Logo */}
+        <div className="flex items-center gap-3">
+          <div className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")} />
+          <div className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer" onClick={() => navigate("/")}>
+            ShopSen
+          </div>
+        </div>
+
+        {/* Category Dropdown */}
+        <div className="relative ml-8">
+          <button
+            onClick={() => setShowCategoryDropdown(!showCategoryDropdown)}
+            className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
+              Category
+            </span>
+            <ChevronDownIcon className={`w-4 h-4 text-[#333333] transition-transform ${showCategoryDropdown ? 'rotate-180' : ''}`} />
+          </button>
+
+          {showCategoryDropdown && (
+            <div className="absolute top-full left-0 mt-2 w-[250px] bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50 max-h-[400px] overflow-y-auto">
+              <button
+                onClick={() => {
+                  setSearchParams({});
+                  setShowCategoryDropdown(false);
+                }}
+                className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
+              >
+                Toutes les catégories
+              </button>
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleCategorySelect(category.id)}
+                  className="w-full px-4 py-2 text-left hover:bg-gray-50 [font-family:'Inter',Helvetica] text-[#333333] text-sm transition-colors"
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Search Bar */}
+        <form onSubmit={handleSearch} className="flex-1 mx-6 max-w-[600px]">
+          <div className="relative">
+            <Input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Headphones"
+              className="w-full h-[44px] bg-white rounded-[22px] border border-gray-300 pl-4 pr-12 [font-family:'Inter',Helvetica] text-[#333333] text-sm shadow-sm"
+            />
+            <button type="submit" className="absolute top-1/2 right-4 -translate-y-1/2">
+              <SearchIcon className="w-5 h-5 text-[#333333]" />
+            </button>
+          </div>
+        </form>
+
+        {/* Right Icons */}
+        <div className="flex items-center gap-6 ml-auto">
+          <button
+            onClick={() => navigate('/profile')}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <UserIcon className="w-5 h-5 text-[#333333]" />
+            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
+              Compte
+            </span>
+          </button>
+
+          <button
+            onClick={() => navigate('/cart')}
+            className="flex items-center gap-2 hover:opacity-80 transition-opacity"
+          >
+            <ShoppingCartIcon className="w-5 h-5 text-[#333333]" />
+            <span className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm">
+              Panier
+            </span>
+          </button>
         </div>
       </header>
 

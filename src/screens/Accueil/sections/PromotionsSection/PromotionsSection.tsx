@@ -8,7 +8,7 @@ export const PromotionsSection = (): JSX.Element => {
       <img
         className="absolute top-0 left-0 w-full h-[575px] object-cover"
         alt="Salooon"
-        src="/salooon.png"
+        src="/images/categories/salooon.png"
       />
 
       <div className="absolute top-[49px] right-[111px] w-[527px]">

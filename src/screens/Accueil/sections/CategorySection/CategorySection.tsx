@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 interface Category {
   id: string;
   name: string;
+  image: string;
   description: string;
 }
 
@@ -36,10 +37,10 @@ export const CategorySection = ({ categories }: Props): JSX.Element => {
             <img
               className="absolute inset-0 w-full h-full object-cover"
               alt={category.name}
-              src={defaultImage}
+              src={category.image || defaultImage}
             />
 
-            <div className="absolute top-[29px] left-0 right-0 text-center px-4 [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-[26px] tracking-[0] leading-[normal]">
+            <div className="absolute top-[29px] left-0 right-0 text-center px-3 [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-[26px] tracking-[0] leading-[normal]">
               {category.name}
             </div>
           </div>

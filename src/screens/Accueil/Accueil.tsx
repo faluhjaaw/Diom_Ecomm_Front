@@ -51,7 +51,7 @@ export const Accueil = (): JSX.Element => {
   }
 
   return (
-    <div className="bg-white overflow-hidden w-full min-w-[1440px] flex flex-col">
+    <div className="bg-white overflow-hidden w-full min-w-[144px] flex flex-col">
       <OffersSection />
       <LandingPageSection />
       <CategorySection categories={categories} />

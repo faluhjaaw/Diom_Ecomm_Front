@@ -4,52 +4,28 @@ import { Card, CardContent } from "../../../../components/ui/card";
 const brandData = [
   {
     name: "Nike",
-    image: "/image-15-1.png",
+    image: "images/brands/nike.png",
     description: "Livraison en moins de 24 heures",
     hasCircleBg: true,
   },
   {
     name: "Adidas",
-    image: "/image-16-1.png",
+    image: "/images/brands/adidas.png",
     description: "Livraison en moins de 24 heures",
     hasCircleBg: true,
   },
   {
     name: "Levis",
-    image: "/image-17-1.png",
+    image: "/images/brands/levis.png",
     description: "Livraison en moins de 24 heures",
     hasCircleBg: true,
   },
   {
     name: "Faynara Mast.",
-    image: "/image-14.png",
+    image: "/images/brands/faynara.png",
     description: "Livraison en moins de 24 heures",
     hasCircleBg: false,
-  },
-  {
-    name: "Nike",
-    image: "/image-15-1.png",
-    description: "Livraison en moins de 24 heures",
-    hasCircleBg: true,
-  },
-  {
-    name: "Adidas",
-    image: "/image-16-1.png",
-    description: "Livraison en moins de 24 heures",
-    hasCircleBg: true,
-  },
-  {
-    name: "Levis",
-    image: "/image-17-1.png",
-    description: "Livraison en moins de 24 heures",
-    hasCircleBg: true,
-  },
-  {
-    name: "Faynara Mast.",
-    image: "/image-14.png",
-    description: "Livraison en moins de 24 heures",
-    hasCircleBg: false,
-  },
+  }
 ];
 
 export const BrandShowcaseSection = (): JSX.Element => {

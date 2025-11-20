@@ -1,14 +1,11 @@
 // src/screens/Accueil/sections/OffersSection/OffersSection.tsx
-import { ChevronDownIcon, SearchIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
 import React, { useState } from "react";
 import { Input } from "../../../../components/ui/input";
-import { productService } from "../../../../services/product.service";
 import { useNavigate } from "react-router-dom";
 
 const navigationItems = [
-  { label: "Category", hasDropdown: true },
-  { label: "Deals", hasDropdown: false },
-  { label: "Nouveautes", hasDropdown: false },
+  { label: "Category", hasDropdown: true }
 ];
 
 export const OffersSection = (): JSX.Element => {
@@ -23,7 +20,7 @@ export const OffersSection = (): JSX.Element => {
   };
 
   return (
-    <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3">
+    <header className="w-ful h-[85px] flex items-center bg-white px-7 gap-3">
       <div
         onClick={() => navigate('/')}
         className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
@@ -66,10 +63,7 @@ export const OffersSection = (): JSX.Element => {
       </form>
 
       <div className="flex items-center gap-[11px] ml-auto">
-        <img
-          className="w-[22.05px] h-[25.07px] object-cover cursor-pointer"
-          alt="Profile"
-          src="/profiiile-1.png"
+        <UserIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer" 
           onClick={() => navigate('/profile')}
         />
         <button
@@ -80,10 +74,7 @@ export const OffersSection = (): JSX.Element => {
       </div>
 
       <div className="flex items-center gap-[5.7px] ml-[30.9px]">
-        <img
-          className="w-[29.62px] h-[26px] object-cover cursor-pointer"
-          alt="Cart"
-          src="/carrt-1.png"
+        <ShoppingCartIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer" 
           onClick={() => navigate('/cart')}
         />
         <button

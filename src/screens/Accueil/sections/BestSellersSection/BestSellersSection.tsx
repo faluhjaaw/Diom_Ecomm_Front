@@ -3,8 +3,7 @@ import React from "react";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Product } from "../../../../types";
-import { useCart } from "../../../../hooks/useCart";
-import { useNavigate } from "react-router-dom";
+import { Heart } from "lucide-react";
 
 interface Props {
   products: Product[];
@@ -12,16 +11,6 @@ interface Props {
 
 export const BestSellersSection = ({ products }: Props): JSX.Element => {
   const positions = ["left-[54px]", "left-[507px]", "left-[960px]"];
-  const { addToCart } = useCart();
-  const navigate = useNavigate();
-
-  const handleAddToCart = async (product: Product) => {
-    try {
-      await addToCart(product.id, 1);
-    } catch (error) {
-      console.error('Error adding to cart:', error);
-    }
-  };
 
   return (
     <section className="w-full flex flex-col py-6">
@@ -36,34 +25,22 @@ export const BestSellersSection = ({ products }: Props): JSX.Element => {
             className={`absolute top-[11px] ${positions[index]} w-[424px]`}
           >
             <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
-              <CardContent
-                className="p-0 relative h-[304px] cursor-pointer"
-                onClick={() => navigate(`/products/${product.id}`)}
-              >
+              <CardContent className="p-0 relative h-[304px]">
                 <img
                   className="absolute top-0 left-[60px] w-[303px] h-[304px] object-cover"
                   alt={product.name}
                   src={product.imageUrls[0] || "/image-10-1.png"}
                 />
 
-                <button
-                  className="absolute top-3.5 left-[379px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center border-0 cursor-pointer hover:bg-gray-50 transition-colors z-10"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <img
-                    className="w-5 h-[17px] object-cover"
-                    alt="Favorite"
-                    src="/image-2-11.png"
-                  />
+                <button className="absolute top-3.5 left-[379px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center border-0 cursor-pointer hover:bg-gray-50 transition-colors">
+                  <Heart />
                 </button>
               </CardContent>
             </Card>
 
             <div className="mt-[29px]">
               <div className="flex items-center justify-between">
-                <h3
-                  onClick={() => navigate(`/products/${product.id}`)}
-                  className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap cursor-pointer hover:text-[#1071b5] transition-colors">
+                <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap">
                   {product.name}
                 </h3>
                 <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap">
@@ -89,7 +66,6 @@ export const BestSellersSection = ({ products }: Props): JSX.Element => {
               </div>
 
               <Button
-                onClick={() => handleAddToCart(product)}
                 variant="outline"
                 className="mt-[22px] w-[181px] h-11 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] [text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] hover:bg-gray-50"
               >
