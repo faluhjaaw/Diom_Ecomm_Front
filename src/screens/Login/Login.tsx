@@ -20,6 +20,7 @@ export const Login = (): JSX.Element => {
     try {
       const { data } = await authService.login(email, password);
       localStorage.setItem("token", data.token);
+      localStorage.setItem("userEmail", email);
       navigate("/");
     } catch (err: any) {
       setError(err.response?.data?.message || "Email ou mot de passe incorrect");

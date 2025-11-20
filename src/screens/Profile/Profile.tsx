@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { authService } from "../../services/auth.service";
+import { userService } from "../../services/user.service";
 
 export const Profile = (): JSX.Element => {
   const navigate = useNavigate();
@@ -27,7 +28,16 @@ export const Profile = (): JSX.Element => {
 
     const loadUserData = async () => {
       try {
-        const { data } = await authService.getCurrentUser();
+        // Récupérer l'email de l'utilisateur depuis le localStorage
+        const userEmail = localStorage.getItem("userEmail");
+        if (!userEmail) {
+          console.error("Email utilisateur introuvable dans le localStorage");
+          navigate("/login");
+          return;
+        }
+
+        // Appeler l'endpoint GET /api/users/email/{email}
+        const { data } = await userService.getUserByEmail(userEmail);
         setFormData({
           prenom: data.prenom,
           nom: data.nom,
@@ -37,6 +47,19 @@ export const Profile = (): JSX.Element => {
         });
       } catch (error) {
         console.error("Erreur chargement profil:", error);
+        // Fallback sur l'ancien endpoint si le nouveau échoue
+        try {
+          const { data } = await authService.getCurrentUser();
+          setFormData({
+            prenom: data.prenom,
+            nom: data.nom,
+            email: data.email,
+            telephone: data.telephone,
+            adresse: data.adresse,
+          });
+        } catch (fallbackError) {
+          console.error("Erreur fallback:", fallbackError);
+        }
       }
     };
 
@@ -50,10 +73,12 @@ export const Profile = (): JSX.Element => {
         await authService.logout(token);
       }
       localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
       navigate("/login");
     } catch (error) {
       console.error("Erreur déconnexion:", error);
       localStorage.removeItem("token");
+      localStorage.removeItem("userEmail");
       navigate("/login");
     }
   };
