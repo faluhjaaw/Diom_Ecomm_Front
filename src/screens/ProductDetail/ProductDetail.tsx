@@ -7,6 +7,7 @@ import { productService } from "../../services/product.service";
 import { avisService } from "../../services/avis.service";
 import { Product } from "../../types";
 import { addToCart } from "../../lib/cart-utils";
+import { ArrowLeftIcon } from "lucide-react";
 
 export const ProductDetail = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -111,18 +112,21 @@ export const ProductDetail = (): JSX.Element => {
         </div>
       </header>
 
-      <div className="max-w-[1440px] mx-auto px-12 py-8">
+      <div className="max-w-[1200px] mx-auto px-12 py-6">
         <button
           onClick={() => navigate(-1)}
-          className="mb-6 [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#1071b5] text-sm hover:underline"
+          className="flex items-center gap-2 mb-4 hover:opacity-80 transition-opacity"
         >
-          ← Retour
+          <ArrowLeftIcon className="w-5 h-5 text-[#333333]" />
+          <span className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal]">
+            Retour
+          </span>
         </button>
 
-        <div className="grid grid-cols-2 gap-12 mb-12">
+        <div className="grid grid-cols-2 gap-8 mb-8">
           <div>
-            <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0 mb-4">
-              <CardContent className="p-0 relative h-[500px]">
+            <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0 mb-3">
+              <CardContent className="p-0 relative h-[380px]">
                 <img
                   src={product.imageUrls[selectedImage] || "/image-1-2.png"}
                   alt={product.name}
@@ -172,16 +176,16 @@ export const ProductDetail = (): JSX.Element => {
               )}
             </div>
 
-            <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-4xl tracking-[0] leading-[normal] mb-4">
+            <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-3">
               {product.name}
             </h1>
 
-            <div className="flex items-center gap-3 mb-6">
+            <div className="flex items-center gap-3 mb-4">
               <div className="flex">
                 {[...Array(5)].map((_, i) => (
                   <span
                     key={i}
-                    className={`text-2xl ${
+                    className={`text-xl ${
                       i < Math.floor(averageRating || product.rating)
                         ? "text-yellow-400"
                         : "text-gray-300"
@@ -191,17 +195,17 @@ export const ProductDetail = (): JSX.Element => {
                   </span>
                 ))}
               </div>
-              <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-base">
+              <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm">
                 ({reviews.length} avis)
               </span>
             </div>
 
-            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-base tracking-[0] leading-[1.6] mb-8">
+            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm tracking-[0] leading-[1.6] mb-6">
               {product.description}
             </p>
 
-            <div className="mb-8">
-              <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-5xl tracking-[0] leading-[normal]">
+            <div className="mb-6">
+              <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-4xl tracking-[0] leading-[normal]">
                 {product.price.toLocaleString()} FCFA
               </p>
               {product.stock < 10 && product.stock > 0 && (
@@ -214,22 +218,22 @@ export const ProductDetail = (): JSX.Element => {
               )}
             </div>
 
-            <div className="flex items-center gap-4 mb-8">
+            <div className="flex items-center gap-4 mb-6">
               <div className="flex items-center border border-[#33333333] rounded-lg overflow-hidden">
                 <button
                   onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-12 h-12 flex items-center justify-center bg-[#f5f6f6] hover:bg-gray-200 [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl"
+                  className="w-10 h-10 flex items-center justify-center bg-[#f5f6f6] hover:bg-gray-200 [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg"
                 >
                   -
                 </button>
-                <span className="w-16 h-12 flex items-center justify-center [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg">
+                <span className="w-14 h-10 flex items-center justify-center [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-base">
                   {quantity}
                 </span>
                 <button
                   onClick={() =>
                     setQuantity(Math.min(product.stock, quantity + 1))
                   }
-                  className="w-12 h-12 flex items-center justify-center bg-[#f5f6f6] hover:bg-gray-200 [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl"
+                  className="w-10 h-10 flex items-center justify-center bg-[#f5f6f6] hover:bg-gray-200 [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg"
                   disabled={quantity >= product.stock}
                 >
                   +
@@ -239,14 +243,14 @@ export const ProductDetail = (): JSX.Element => {
               <Button
                 onClick={handleAddToCart}
                 disabled={product.stock === 0 || addingToCart}
-                className="flex-1 h-12 bg-[#1071b5] rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-base hover:bg-[#0d5a94] disabled:opacity-50"
+                className="flex-1 h-10 bg-[#1071b5] rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-sm hover:bg-[#0d5a94] disabled:opacity-50"
               >
                 {addingToCart ? "Ajout en cours..." : "Ajouter au panier"}
               </Button>
             </div>
 
             {product.tags && product.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2 mb-8">
+              <div className="flex flex-wrap gap-2 mb-6">
                 {product.tags.map((tag, index) => (
                   <Badge key={index} variant="secondary">
                     {tag}
@@ -258,11 +262,11 @@ export const ProductDetail = (): JSX.Element => {
             {product.specifications &&
               Object.keys(product.specifications).length > 0 && (
                 <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
-                  <CardContent className="p-6">
-                    <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] mb-4">
+                  <CardContent className="p-5">
+                    <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg tracking-[0] leading-[normal] mb-3">
                       Spécifications
                     </h3>
-                    <div className="flex flex-col gap-3">
+                    <div className="flex flex-col gap-2">
                       {Object.entries(product.specifications).map(
                         ([key, value]: [string, any]) => (
                           <div
@@ -286,34 +290,34 @@ export const ProductDetail = (): JSX.Element => {
         </div>
 
         <div>
-          <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-2xl tracking-[0] leading-[normal] mb-6">
+          <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] mb-4">
             Avis clients ({reviews.length})
           </h2>
 
           {reviews.length === 0 ? (
             <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
-              <CardContent className="p-8 text-center">
-                <p className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-base">
+              <CardContent className="p-6 text-center">
+                <p className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm">
                   Aucun avis pour le moment. Soyez le premier à donner votre
                   avis!
                 </p>
               </CardContent>
             </Card>
           ) : (
-            <div className="flex flex-col gap-4">
+            <div className="flex flex-col gap-3">
               {reviews.map((review) => (
                 <Card
                   key={review.id}
                   className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0"
                 >
-                  <CardContent className="p-6">
-                    <div className="flex items-center justify-between mb-3">
+                  <CardContent className="p-4">
+                    <div className="flex items-center justify-between mb-2">
                       <div className="flex items-center gap-2">
                         <div className="flex">
                           {[...Array(5)].map((_, i) => (
                             <span
                               key={i}
-                              className={`text-base ${
+                              className={`text-sm ${
                                 i < review.note
                                   ? "text-yellow-400"
                                   : "text-gray-300"
@@ -324,7 +328,7 @@ export const ProductDetail = (): JSX.Element => {
                           ))}
                         </div>
                       </div>
-                      <span className="text-sm text-gray-500">
+                      <span className="text-xs text-gray-500">
                         {new Date(review.date).toLocaleDateString("fr-FR")}
                       </span>
                     </div>

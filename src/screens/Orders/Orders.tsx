@@ -211,7 +211,7 @@ export const Orders = (): JSX.Element => {
                     <div>
                       <div className="flex items-center gap-3 mb-2">
                         <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg tracking-[0] leading-[normal]">
-                          Commande #{order.id.slice(0, 8)}
+                          N° Commande #{order.id.slice(0, 8)}
                         </h3>
                         {getStatusBadge(order.status)}
                       </div>
