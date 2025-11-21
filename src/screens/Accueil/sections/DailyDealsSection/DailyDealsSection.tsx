@@ -1,26 +1,57 @@
 // src/screens/Accueil/sections/DailyDealsSection/DailyDealsSection.tsx
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
-import { Product } from "../../../../types";
+import { Product, Category } from "../../../../types";
 import { Heart } from "lucide-react";
+import { categoryService } from "../../../../services/category.service";
+import { productService } from "../../../../services/product.service";
 
 interface Props {
   products: Product[];
 }
 
-const categories = [
-  { label: "Gadgets", active: false },
-  { label: "Fashion", active: false },
-  { label: "Jouets", active: false },
-  { label: "Education", active: true },
-  { label: "Beaute", active: false },
-  { label: "Fitness", active: false },
-  { label: "Sneakers", active: false },
-];
+export const DailyDealsSection = ({ products: initialProducts }: Props): JSX.Element => {
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts);
+  const [loading, setLoading] = useState(false);
 
-export const DailyDealsSection = ({ products }: Props): JSX.Element => {
-  const [activeCategory, setActiveCategory] = useState("Education");
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  useEffect(() => {
+    setFilteredProducts(initialProducts);
+  }, [initialProducts]);
+
+  const fetchCategories = async () => {
+    try {
+      const { data } = await categoryService.getAll();
+      setCategories(data.slice(0, 7)); // Limite à 7 catégories
+    } catch (error) {
+      console.error("Erreur chargement catégories:", error);
+    }
+  };
+
+  const handleCategoryClick = async (categoryId: string) => {
+    setActiveCategory(categoryId);
+    setLoading(true);
+    try {
+      const { data } = await productService.filterByCategory(categoryId);
+      setFilteredProducts(data);
+    } catch (error) {
+      console.error("Erreur filtrage produits:", error);
+      setFilteredProducts([]);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleShowAll = () => {
+    setActiveCategory(null);
+    setFilteredProducts(initialProducts);
+  };
 
   const handleAddToCart = (productId: string) => {
     console.log('Ajout au panier:', productId);
@@ -32,25 +63,45 @@ export const DailyDealsSection = ({ products }: Props): JSX.Element => {
         Les meilleures offres du jour
       </h2>
 
-      <div className="flex gap-4 mb-14">
-        {categories.map((category, index) => (
+      <div className="flex gap-4 mb-14 overflow-x-auto [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+        <Button
+          variant="outline"
+          onClick={handleShowAll}
+          className={`h-auto px-7 py-3.5 rounded-[42.72px] border-[1.42px] border-[#33333333] ${
+            activeCategory === null ? "bg-[#86dcff]" : "bg-white"
+          }`}
+        >
+          <span className="[text-shadow:0px_0.41px_30.79px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[18.5px] tracking-[0] leading-[normal] whitespace-nowrap">
+            Tout afficher
+          </span>
+        </Button>
+        {categories.map((category) => (
           <Button
-            key={index}
+            key={category.id}
             variant="outline"
-            onClick={() => setActiveCategory(category.label)}
-            className={`h-auto px-7 py-3.5 rounded-[42.72px] border-[1.42px] border-[#33333333] shadow-[0px_2.85px_8.69px_#0000001a] ${
-              activeCategory === category.label ? "bg-[#86dcff]" : "bg-white"
+            onClick={() => handleCategoryClick(category.id)}
+            className={`h-auto px-7 py-3.5 rounded-[42.72px] border-[1.42px] border-[#33333333] ${
+              activeCategory === category.id ? "bg-[#86dcff]" : "bg-white"
             }`}
           >
             <span className="[text-shadow:0px_2.41px_30.79px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[18.5px] tracking-[0] leading-[normal] whitespace-nowrap">
-              {category.label}
+              {category.name}
             </span>
           </Button>
         ))}
       </div>
 
-      <div className="grid grid-cols-4 gap-x-[40px] gap-y-[30px]">
-        {products.map((product) => (
+      {loading ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-xl text-[#333333]">Chargement...</p>
+        </div>
+      ) : filteredProducts.length === 0 ? (
+        <div className="flex items-center justify-center h-64">
+          <p className="text-xl text-[#333333]">Aucun produit dans cette catégorie</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-4 gap-x-[40px] gap-y-[30px]">
+          {filteredProducts.map((product) => (
           <div key={product.id} className="flex flex-col">
             <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0 mb-5">
               <CardContent className="p-0 relative">
@@ -104,6 +155,7 @@ export const DailyDealsSection = ({ products }: Props): JSX.Element => {
           </div>
         ))}
       </div>
+      )}
     </section>
   );
 };

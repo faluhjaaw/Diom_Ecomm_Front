@@ -3,19 +3,30 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { cartService } from "../../services/cart.service";
-import { Cart } from "../../types";
-import { Trash2Icon } from "lucide-react";
+import { userService } from "../../services/user.service";
+import { productService } from "../../services/product.service";
+import { Cart, Product } from "../../types";
+import { Trash2Icon, ShoppingCartIcon, UserIcon } from "lucide-react";
+
+interface CartItemWithProduct {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  product?: Product;
+}
 
 export const CartPage = (): JSX.Element => {
   const navigate = useNavigate();
   const [cart, setCart] = useState<Cart | null>(null);
+  const [cartItemsWithProducts, setCartItemsWithProducts] = useState<CartItemWithProduct[]>([]);
   const [loading, setLoading] = useState(true);
+  const [userId, setUserId] = useState<number | null>(null);
 
   useEffect(() => {
-    fetchCart();
+    initializeCart();
   }, []);
 
-  const fetchCart = async () => {
+  const initializeCart = async () => {
     const token = localStorage.getItem("token");
     if (!token) {
       navigate("/login");
@@ -23,9 +34,47 @@ export const CartPage = (): JSX.Element => {
     }
 
     try {
-      const userId = 1; // TODO: Get from auth context
-      const { data } = await cartService.getOrCreate(userId);
+      // Récupérer l'userId depuis le localStorage via l'email
+      const userEmail = localStorage.getItem("userEmail");
+      if (!userEmail) {
+        console.error("Email utilisateur introuvable");
+        navigate("/login");
+        return;
+      }
+
+      const { data: userData } = await userService.getUserByEmail(userEmail);
+      setUserId(userData.id);
+
+      // Récupérer le panier
+      await fetchCart(userData.id);
+    } catch (error) {
+      console.error("Erreur initialisation panier:", error);
+      setLoading(false);
+    }
+  };
+
+  const fetchCart = async (userIdParam: number) => {
+    try {
+      const { data } = await cartService.getOrCreate(userIdParam);
       setCart(data);
+
+      // Enrichir les items avec les informations des produits
+      if (data.items && data.items.length > 0) {
+        const itemsWithProducts = await Promise.all(
+          data.items.map(async (item): Promise<CartItemWithProduct> => {
+            try {
+              const { data: product } = await productService.getById(item.productId);
+              return { ...item, product };
+            } catch (error) {
+              console.error(`Erreur chargement produit ${item.productId}:`, error);
+              return { ...item, product: undefined };
+            }
+          })
+        );
+        setCartItemsWithProducts(itemsWithProducts);
+      } else {
+        setCartItemsWithProducts([]);
+      }
     } catch (error) {
       console.error("Erreur chargement panier:", error);
     } finally {
@@ -34,32 +83,34 @@ export const CartPage = (): JSX.Element => {
   };
 
   const handleUpdateQuantity = async (productId: string, quantity: number) => {
+    if (!userId) return;
+
     try {
-      const userId = 1; // TODO: Get from auth context
       await cartService.updateQuantity(userId, productId, quantity);
-      await fetchCart();
+      await fetchCart(userId);
     } catch (error) {
       console.error("Erreur mise à jour quantité:", error);
     }
   };
 
   const handleRemoveItem = async (productId: string) => {
+    if (!userId) return;
+
     try {
-      const userId = 1; // TODO: Get from auth context
       await cartService.removeItem(userId, productId);
-      await fetchCart();
+      await fetchCart(userId);
     } catch (error) {
       console.error("Erreur suppression article:", error);
     }
   };
 
   const handleClearCart = async () => {
+    if (!userId) return;
     if (!confirm("Êtes-vous sûr de vouloir vider le panier?")) return;
 
     try {
-      const userId = 1; // TODO: Get from auth context
       await cartService.clear(userId);
-      await fetchCart();
+      await fetchCart(userId);
     } catch (error) {
       console.error("Erreur vidage panier:", error);
     }
@@ -75,7 +126,7 @@ export const CartPage = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+      <header className="w-full h-[85px] flex items-center bg-white px-20 gap-3 border-b border-gray-200">
         <div
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
           onClick={() => navigate("/")}
@@ -86,6 +137,21 @@ export const CartPage = (): JSX.Element => {
         >
           ShopSen
         </div>
+
+        <nav className="ml-auto flex items-center gap-6">
+          <div className="flex items-center gap-[11px]">
+            <UserIcon
+              className="w-5 h-5 text-[#333333] hover:cursor-pointer"
+              onClick={() => navigate('/profile')}
+            />
+            <button
+              onClick={() => navigate("/profile")}
+              className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors"
+            >
+              Compte
+            </button>
+          </div>
+        </nav>
       </header>
 
       <div className="max-w-[1200px] mx-auto px-12 py-8">
@@ -107,11 +173,7 @@ export const CartPage = (): JSX.Element => {
         {!cart || cart.items.length === 0 ? (
           <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
             <CardContent className="p-16 flex flex-col items-center justify-center">
-              <img
-                src="/carrt-1.png"
-                alt="Empty cart"
-                className="w-24 h-24 mb-6 opacity-50"
-              />
+              <ShoppingCartIcon className="w-24 h-24 mb-6 text-gray-400" />
               <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-2xl tracking-[0] leading-[normal] mb-2">
                 Votre panier est vide
               </h2>
@@ -130,25 +192,37 @@ export const CartPage = (): JSX.Element => {
           <div className="grid grid-cols-3 gap-8">
             <div className="col-span-2">
               <div className="flex flex-col gap-4">
-                {cart.items.map((item) => (
+                {cartItemsWithProducts.map((item) => (
                   <Card
                     key={item.productId}
                     className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0"
                   >
                     <CardContent className="p-6">
                       <div className="flex gap-6">
-                        <div className="w-32 h-32 bg-white rounded-lg overflow-hidden flex-shrink-0">
+                        <div
+                          className="w-32 h-32 bg-white rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
+                          onClick={() => navigate(`/products/${item.productId}`)}
+                        >
                           <img
-                            src="/image-1-2.png"
-                            alt="Product"
+                            src={item.product?.imageUrls[0] || "/image-1-2.png"}
+                            alt={item.product?.name || "Product"}
                             className="w-full h-full object-cover"
                           />
                         </div>
 
                         <div className="flex-1">
-                          <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg tracking-[0] leading-[normal] mb-2">
-                            Produit #{item.productId}
+                          <h3
+                            className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-lg tracking-[0] leading-[normal] mb-2 cursor-pointer hover:text-[#1071b5] transition-colors"
+                            onClick={() => navigate(`/products/${item.productId}`)}
+                          >
+                            {item.product?.name || `Produit #${item.productId}`}
                           </h3>
+
+                          {item.product?.description && (
+                            <p className="[font-family:'Inter',Helvetica] font-normal text-[#666] text-sm mb-2 line-clamp-2">
+                              {item.product.description}
+                            </p>
+                          )}
 
                           <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-xl tracking-[0] leading-[normal] mb-4">
                             {item.unitPrice.toLocaleString()} FCFA
@@ -215,7 +289,7 @@ export const CartPage = (): JSX.Element => {
                   <div className="flex flex-col gap-4 mb-6">
                     <div className="flex justify-between items-center">
                       <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-base">
-                        Sous-total
+                        Sous-total ({cart.items.length} article{cart.items.length > 1 ? 's' : ''})
                       </span>
                       <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-base">
                         {cart.total.toLocaleString()} FCFA
