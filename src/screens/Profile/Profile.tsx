@@ -5,7 +5,7 @@ import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { authService } from "../../services/auth.service";
 import { userService } from "../../services/user.service";
-import { ShoppingCartIcon, PackageIcon } from "lucide-react";
+import { ShoppingCartIcon, PackageIcon, ArrowLeftIcon } from "lucide-react";
 
 export const Profile = (): JSX.Element => {
   const navigate = useNavigate();
@@ -147,6 +147,16 @@ export const Profile = (): JSX.Element => {
       </header>
 
       <div className="max-w-[800px] mx-auto px-12 py-8">
+        <button
+          onClick={() => navigate(-1)}
+          className="flex items-center gap-2 mb-6 hover:opacity-80 transition-opacity"
+        >
+          <ArrowLeftIcon className="w-5 h-5 text-[#333333]" />
+          <span className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal]">
+            Retour
+          </span>
+        </button>
+
         <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-8">
           Mon Profil
         </h1>
