@@ -1,21 +1,25 @@
 // src/screens/Accueil/sections/DailyDealsSection/DailyDealsSection.tsx
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Product, Category } from "../../../../types";
 import { Heart } from "lucide-react";
 import { categoryService } from "../../../../services/category.service";
 import { productService } from "../../../../services/product.service";
+import { addToCart } from "../../../../lib/cart-utils";
 
 interface Props {
   products: Product[];
 }
 
 export const DailyDealsSection = ({ products: initialProducts }: Props): JSX.Element => {
+  const navigate = useNavigate();
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
   const [categories, setCategories] = useState<Category[]>([]);
   const [filteredProducts, setFilteredProducts] = useState<Product[]>(initialProducts);
   const [loading, setLoading] = useState(false);
+  const [addingToCart, setAddingToCart] = useState<string | null>(null);
 
   useEffect(() => {
     fetchCategories();
@@ -53,8 +57,29 @@ export const DailyDealsSection = ({ products: initialProducts }: Props): JSX.Ele
     setFilteredProducts(initialProducts);
   };
 
-  const handleAddToCart = (productId: string) => {
-    console.log('Ajout au panier:', productId);
+  const handleAddToCart = async (product: Product) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      // Rediriger vers la page de connexion si non connecté
+      navigate("/login");
+      return;
+    }
+
+    setAddingToCart(product.id);
+
+    const result = await addToCart({
+      productId: product.id,
+      quantity: 1,
+      unitPrice: product.price
+    });
+
+    setAddingToCart(null);
+
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert(result.message);
+    }
   };
 
   return (
@@ -145,11 +170,12 @@ export const DailyDealsSection = ({ products: initialProducts }: Props): JSX.Ele
 
             <Button
               variant="outline"
-              onClick={() => handleAddToCart(product.id)}
-              className="h-auto w-[181px] py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]"
+              onClick={() => handleAddToCart(product)}
+              disabled={addingToCart === product.id}
+              className="h-auto w-[181px] py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] disabled:opacity-50"
             >
               <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
-                Ajouter au panier
+                {addingToCart === product.id ? "Ajout..." : "Ajouter au panier"}
               </span>
             </Button>
           </div>

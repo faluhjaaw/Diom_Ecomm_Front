@@ -21,8 +21,12 @@ api.interceptors.request.use((config) => {
 api.interceptors.response.use(
   (response) => response,
   (error) => {
-    if (error.response?.status === 403) {
+    // Ne pas rediriger automatiquement pour les erreurs 403
+    // Laisser les composants gérer les erreurs individuellement
+    if (error.response?.status === 401) {
+      // Seulement pour 401 (Unauthorized), on redirige vers login
       localStorage.removeItem('token');
+      localStorage.removeItem('userEmail');
       window.location.href = '/login';
     }
     return Promise.reject(error);

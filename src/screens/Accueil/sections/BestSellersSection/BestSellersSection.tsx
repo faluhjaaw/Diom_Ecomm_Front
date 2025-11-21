@@ -1,83 +1,106 @@
 // src/screens/Accueil/sections/BestSellersSection/BestSellersSection.tsx
-import React from "react";
+import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "../../../../components/ui/button";
 import { Card, CardContent } from "../../../../components/ui/card";
 import { Product } from "../../../../types";
 import { Heart } from "lucide-react";
+import { addToCart } from "../../../../lib/cart-utils";
 
 interface Props {
   products: Product[];
 }
 
 export const BestSellersSection = ({ products }: Props): JSX.Element => {
-  const positions = ["left-[54px]", "left-[507px]", "left-[960px]"];
+  const navigate = useNavigate();
+  const [addingToCart, setAddingToCart] = useState<string | null>(null);
+
+  const handleAddToCart = async (product: Product) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    setAddingToCart(product.id);
+
+    const result = await addToCart({
+      productId: product.id,
+      quantity: 1,
+      unitPrice: product.price
+    });
+
+    setAddingToCart(null);
+
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert(result.message);
+    }
+  };
 
   return (
-    <section className="w-full flex flex-col py-6">
-      <h2 className="ml-[54px] [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] whitespace-nowrap">
+    <section className="w-full py-8 px-14">
+      <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-8">
         Produits les plus vendus
       </h2>
 
-      <div className="relative mt-[35px] h-[508px]">
-        {products.slice(0, 3).map((product, index) => (
-          <div
-            key={product.id}
-            className={`absolute top-[11px] ${positions[index]} w-[424px]`}
-          >
-            <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
-              <CardContent className="p-0 relative h-[304px]">
+      <div className="grid grid-cols-4 gap-x-[40px] gap-y-[30px]">
+        {products.slice(0, 4).map((product) => (
+          <div key={product.id} className="flex flex-col">
+            <Card className="bg-[#f5f6f6] rounded-[20px] overflow-hidden shadow-[0px_2px_5.8px_1px_#0000001a] border-0 mb-5">
+              <CardContent className="p-0 relative">
                 <img
-                  className="absolute top-0 left-[60px] w-[303px] h-[304px] object-cover"
+                  className="w-full h-[303px] object-cover"
                   alt={product.name}
-                  src={product.imageUrls[0] || "/image-10-1.png"}
+                  src={product.imageUrls[0] || "/image-1-2.png"}
                 />
-
-                <button className="absolute top-3.5 left-[379px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center border-0 cursor-pointer hover:bg-gray-50 transition-colors">
+                <button
+                  className="absolute top-[13px] right-[13px] w-[30px] h-[30px] bg-white rounded-[15px] flex items-center justify-center"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Heart />
                 </button>
               </CardContent>
             </Card>
 
-            <div className="mt-[29px]">
-              <div className="flex items-center justify-between">
-                <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap">
-                  {product.name}
-                </h3>
-                <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap">
-                  {product.price.toLocaleString()} FCFA
-                </p>
+            <h3 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal] whitespace-nowrap mb-1">
+              {product.name}
+            </h3>
+
+            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal] mb-2 line-clamp-2">
+              {product.description}
+            </p>
+
+            <div className="flex items-center gap-2 mb-3">
+              <div className="flex">
+                {[...Array(5)].map((_, i) => (
+                  <span key={i} className={i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"}>
+                    ★
+                  </span>
+                ))}
               </div>
-
-              <p className="mt-[9px] [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal] line-clamp-2">
-                {product.description}
-              </p>
-
-              <div className="flex items-center gap-[11px] mt-[22px]">
-                <div className="flex">
-                  {[...Array(5)].map((_, i) => (
-                    <span key={i} className={i < Math.floor(product.rating) ? "text-yellow-400" : "text-gray-300"}>
-                      ★
-                    </span>
-                  ))}
-                </div>
-                <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
-                  ({product.rating})
-                </span>
-              </div>
-
-              <Button
-                variant="outline"
-                className="mt-[22px] w-[181px] h-11 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] [text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] hover:bg-gray-50"
-              >
-                Ajouter au panier
-              </Button>
+              <span className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
+                ({product.rating})
+              </span>
             </div>
+
+            <p className="font-semibold text-[#333333] text-xl whitespace-nowrap [text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] tracking-[0] leading-[normal] mb-4">
+              {product.price.toLocaleString()} FCFA
+            </p>
+
+            <Button
+              variant="outline"
+              onClick={() => handleAddToCart(product)}
+              disabled={addingToCart === product.id}
+              className="h-auto w-[181px] py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] disabled:opacity-50"
+            >
+              <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
+                {addingToCart === product.id ? "Ajout..." : "Ajouter au panier"}
+              </span>
+            </Button>
           </div>
         ))}
-      </div>
-
-      <div className="ml-[58px] w-[1327px] mt-[37px] flex bg-[#d9d9d9] rounded-[20px] overflow-hidden shadow-[0px_2px_10.4px_-10px_#00000040] h-[7px]">
-        <div className="w-[828px] h-[7px] bg-black rounded-[20px]" />
       </div>
     </section>
   );

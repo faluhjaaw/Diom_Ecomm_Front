@@ -5,8 +5,8 @@ import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { productService } from "../../services/product.service";
 import { avisService } from "../../services/avis.service";
-import { cartService } from "../../services/cart.service";
 import { Product } from "../../types";
+import { addToCart } from "../../lib/cart-utils";
 
 export const ProductDetail = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -18,6 +18,7 @@ export const ProductDetail = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [addingToCart, setAddingToCart] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -57,13 +58,22 @@ export const ProductDetail = (): JSX.Element => {
       return;
     }
 
-    try {
-      const userId = 1; // TODO: Get from auth context
-      await cartService.addItem(userId, product!.id, quantity, product!.price);
-      alert("Produit ajouté au panier");
-    } catch (error) {
-      console.error("Erreur ajout panier:", error);
-      alert("Erreur lors de l'ajout au panier");
+    if (!product) return;
+
+    setAddingToCart(true);
+
+    const result = await addToCart({
+      productId: product.id,
+      quantity: quantity,
+      unitPrice: product.price
+    });
+
+    setAddingToCart(false);
+
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert(result.message);
     }
   };
 
@@ -228,10 +238,10 @@ export const ProductDetail = (): JSX.Element => {
 
               <Button
                 onClick={handleAddToCart}
-                disabled={product.stock === 0}
+                disabled={product.stock === 0 || addingToCart}
                 className="flex-1 h-12 bg-[#1071b5] rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-white text-base hover:bg-[#0d5a94] disabled:opacity-50"
               >
-                Ajouter au panier
+                {addingToCart ? "Ajout en cours..." : "Ajouter au panier"}
               </Button>
             </div>
 

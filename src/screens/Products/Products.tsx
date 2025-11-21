@@ -7,6 +7,7 @@ import { productService } from "../../services/product.service";
 import { categoryService } from "../../services/category.service";
 import { Product, Category } from "../../types";
 import { SearchIcon, FilterIcon, ChevronDownIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
+import { addToCart } from "../../lib/cart-utils";
 
 export const Products = (): JSX.Element => {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -17,6 +18,7 @@ export const Products = (): JSX.Element => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState(searchParams.get("search") || "");
   const [showCategoryDropdown, setShowCategoryDropdown] = useState(false);
+  const [addingToCart, setAddingToCart] = useState<string | null>(null);
 
   const [filters, setFilters] = useState({
     categoryId: searchParams.get("category") || "",
@@ -109,8 +111,28 @@ export const Products = (): JSX.Element => {
     setShowCategoryDropdown(false);
   };
 
-  const handleAddToCart = (productId: string) => {
-    console.log('Ajout au panier:', productId);
+  const handleAddToCart = async (product: Product) => {
+    const token = localStorage.getItem("token");
+    if (!token) {
+      navigate("/login");
+      return;
+    }
+
+    setAddingToCart(product.id);
+
+    const result = await addToCart({
+      productId: product.id,
+      quantity: 1,
+      unitPrice: product.price
+    });
+
+    setAddingToCart(null);
+
+    if (result.success) {
+      alert(result.message);
+    } else {
+      alert(result.message);
+    }
   };
 
   return (
@@ -393,12 +415,13 @@ export const Products = (): JSX.Element => {
                             variant="outline"
                             onClick={(e) => {
                               e.stopPropagation();
-                              handleAddToCart(product.id);
+                              handleAddToCart(product);
                             }}
-                            className="h-auto w-full py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]"
+                            disabled={addingToCart === product.id}
+                            className="h-auto w-full py-3 bg-white rounded-[36.63px] border-[1.22px] border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] disabled:opacity-50"
                           >
                             <span className="[text-shadow:0px_2.07px_26.41px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[15.9px] tracking-[0] leading-[normal] whitespace-nowrap">
-                              Ajouter au panier
+                              {addingToCart === product.id ? "Ajout..." : "Ajouter au panier"}
                             </span>
                           </Button>
                         </div>

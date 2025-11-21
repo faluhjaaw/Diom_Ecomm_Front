@@ -4,13 +4,26 @@ import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
 import { Badge } from "../../components/ui/badge";
 import { orderService } from "../../services/order.service";
-import { Order } from "../../types";
+import { userService } from "../../services/user.service";
+import { productService } from "../../services/product.service";
+import { Order, Product } from "../../types";
 import { PackageIcon, CheckCircleIcon, ShoppingCartIcon, UserIcon, ArrowLeftIcon } from "lucide-react";
+
+interface OrderItemWithProduct {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  product?: Product;
+}
+
+interface OrderWithProducts extends Order {
+  itemsWithProducts?: OrderItemWithProduct[];
+}
 
 export const Orders = (): JSX.Element => {
   const navigate = useNavigate();
   const location = useLocation();
-  const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<OrderWithProducts[]>([]);
   const [loading, setLoading] = useState(true);
   const [showSuccess, setShowSuccess] = useState(false);
 
@@ -30,12 +43,53 @@ export const Orders = (): JSX.Element => {
     }
 
     try {
-      const userId = 1; // TODO: Get from auth context
-      // Note: L'API ne fournit pas d'endpoint pour récupérer toutes les commandes d'un user
-      // Il faudrait l'ajouter au backend ou utiliser un endpoint existant
-      setOrders([]);
-    } catch (error) {
+      // Récupérer l'userId depuis le localStorage via l'email
+      const userEmail = localStorage.getItem("userEmail");
+      if (!userEmail) {
+        console.error("Email utilisateur introuvable");
+        navigate("/login");
+        return;
+      }
+
+      const { data: userData } = await userService.getUserByEmail(userEmail);
+      console.log("User data:", userData);
+
+      // Récupérer les commandes de l'utilisateur
+      console.log("Fetching orders for userId:", userData.id);
+      const { data: ordersData } = await orderService.getUserOrders(userData.id);
+      console.log("Orders fetched:", ordersData);
+
+      // Enrichir chaque commande avec les informations des produits
+      const ordersWithProducts = await Promise.all(
+        ordersData.map(async (order: Order): Promise<OrderWithProducts> => {
+          if (order.items && order.items.length > 0) {
+            const itemsWithProducts = await Promise.all(
+              order.items.map(async (item): Promise<OrderItemWithProduct> => {
+                try {
+                  const { data: product } = await productService.getById(item.productId);
+                  return { ...item, product };
+                } catch (error) {
+                  console.error(`Erreur chargement produit ${item.productId}:`, error);
+                  return { ...item, product: undefined };
+                }
+              })
+            );
+            return { ...order, itemsWithProducts };
+          }
+          return { ...order, itemsWithProducts: [] };
+        })
+      );
+
+      console.log("Orders with products:", ordersWithProducts);
+      setOrders(ordersWithProducts);
+    } catch (error: any) {
       console.error("Erreur chargement commandes:", error);
+      console.error("Error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      setOrders([]);
     } finally {
       setLoading(false);
     }
@@ -181,7 +235,54 @@ export const Orders = (): JSX.Element => {
                   </div>
 
                   <div className="border-t border-gray-300 pt-4 mb-4">
-                    <div className="grid grid-cols-2 gap-4 text-sm">
+                    <h4 className="[font-family:'Inter',Helvetica] font-medium text-[#333333] mb-3">
+                      Produits commandés
+                    </h4>
+                    <div className="flex flex-col gap-3 mb-4">
+                      {order.itemsWithProducts && order.itemsWithProducts.length > 0 ? (
+                        order.itemsWithProducts.map((item) => (
+                          <div
+                            key={item.productId}
+                            className="flex items-center gap-4 p-3 bg-white rounded-lg cursor-pointer hover:shadow-md transition-shadow"
+                            onClick={() => navigate(`/products/${item.productId}`)}
+                          >
+                            <div className="w-16 h-16 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                              <img
+                                src={item.product?.imageUrls[0] || "/image-1-2.png"}
+                                alt={item.product?.name || "Product"}
+                                className="w-full h-full object-cover"
+                              />
+                            </div>
+                            <div className="flex-1">
+                              <h5 className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm mb-1">
+                                {item.product?.name || `Produit #${item.productId.slice(0, 8)}`}
+                              </h5>
+                              <p className="[font-family:'Inter',Helvetica] font-normal text-gray-600 text-xs">
+                                Quantité: {item.quantity} × {item.unitPrice.toLocaleString()} FCFA
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                                {(item.unitPrice * item.quantity).toLocaleString()} FCFA
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        order.items.map((item) => (
+                          <div key={item.productId} className="flex justify-between items-center text-sm p-3 bg-white rounded-lg">
+                            <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333]">
+                              {item.quantity}x Produit #{item.productId.slice(0, 8)}
+                            </span>
+                            <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333]">
+                              {(item.unitPrice * item.quantity).toLocaleString()} FCFA
+                            </span>
+                          </div>
+                        ))
+                      )}
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-4 text-sm pt-3 border-t border-gray-200">
                       <div>
                         <p className="[font-family:'Inter',Helvetica] font-medium text-[#333333] mb-1">
                           Adresse de livraison
@@ -204,12 +305,6 @@ export const Orders = (): JSX.Element => {
                   </div>
 
                   <div className="flex gap-3">
-                    <Button
-                      variant="outline"
-                      className="h-10 px-6 bg-white rounded-lg border-[1.22px] border-[#33333333] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm hover:bg-gray-50"
-                    >
-                      Voir les détails
-                    </Button>
                     {order.status === "DELIVERED" && (
                       <Button
                         onClick={() => navigate(`/reviews?orderId=${order.id}`)}

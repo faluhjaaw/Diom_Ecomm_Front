@@ -5,13 +5,25 @@ import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { cartService } from "../../services/cart.service";
 import { orderService } from "../../services/order.service";
-import { Cart } from "../../types";
+import { userService } from "../../services/user.service";
+import { productService } from "../../services/product.service";
+import { Cart, Product } from "../../types";
+
+interface CartItemWithProduct {
+  productId: string;
+  quantity: number;
+  unitPrice: number;
+  product?: Product;
+}
 
 export const Checkout = (): JSX.Element => {
   const navigate = useNavigate();
   const [cart, setCart] = useState<Cart | null>(null);
+  const [cartItemsWithProducts, setCartItemsWithProducts] = useState<CartItemWithProduct[]>([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
+  const [userId, setUserId] = useState<number | null>(null);
+  const [error, setError] = useState<string>("");
 
   const [formData, setFormData] = useState({
     shippingAddress: "",
@@ -34,15 +46,41 @@ export const Checkout = (): JSX.Element => {
     }
 
     try {
-      const userId = 1; // TODO: Get from auth context
-      const { data } = await cartService.getOrCreate(userId);
-      
+      // Récupérer l'userId depuis le localStorage via l'email
+      const userEmail = localStorage.getItem("userEmail");
+      if (!userEmail) {
+        console.error("Email utilisateur introuvable");
+        navigate("/login");
+        return;
+      }
+
+      const { data: userData } = await userService.getUserByEmail(userEmail);
+      setUserId(userData.id);
+
+      const { data } = await cartService.getOrCreate(userData.id);
+
       if (!data.items || data.items.length === 0) {
         navigate("/cart");
         return;
       }
-      
+
       setCart(data);
+
+      // Enrichir les items avec les informations des produits
+      if (data.items && data.items.length > 0) {
+        const itemsWithProducts = await Promise.all(
+          data.items.map(async (item: { productId: string; quantity: number; unitPrice: number }): Promise<CartItemWithProduct> => {
+            try {
+              const { data: product } = await productService.getById(item.productId);
+              return { ...item, product };
+            } catch (error) {
+              console.error(`Erreur chargement produit ${item.productId}:`, error);
+              return { ...item, product: undefined };
+            }
+          })
+        );
+        setCartItemsWithProducts(itemsWithProducts);
+      }
     } catch (error) {
       console.error("Erreur chargement panier:", error);
       navigate("/cart");
@@ -51,21 +89,97 @@ export const Checkout = (): JSX.Element => {
     }
   };
 
+  const handleCardNumberChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Formater le numéro de carte avec des espaces tous les 4 chiffres
+    const value = e.target.value.replace(/\s/g, '').replace(/\D/g, '');
+    const formatted = value.match(/.{1,4}/g)?.join(' ') || value;
+    setFormData({ ...formData, cardNumber: formatted });
+  };
+
+  const handleExpiryChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // Formater la date d'expiration MM/AA
+    const value = e.target.value.replace(/\D/g, '');
+    let formatted = value;
+    if (value.length >= 2) {
+      formatted = value.slice(0, 2) + '/' + value.slice(2, 4);
+    }
+    setFormData({ ...formData, cardExpiry: formatted });
+  };
+
+  const handleCvvChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    // N'accepter que les chiffres pour le CVV
+    const value = e.target.value.replace(/\D/g, '');
+    setFormData({ ...formData, cardCvv: value });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!userId) return;
+
+    setError("");
+
+    // Validation de l'adresse de livraison
+    if (!formData.shippingAddress.trim()) {
+      setError("Veuillez saisir une adresse de livraison");
+      return;
+    }
+
+    // Validation des champs de carte si paiement par carte
+    if (formData.paymentMethod === "CARD") {
+      if (!formData.cardNumber.trim() || !formData.cardName.trim() ||
+          !formData.cardExpiry.trim() || !formData.cardCvv.trim()) {
+        setError("Veuillez remplir tous les champs de la carte bancaire");
+        return;
+      }
+
+      // Validation basique du format
+      if (formData.cardNumber.replace(/\s/g, '').length < 13) {
+        setError("Le numéro de carte est invalide");
+        return;
+      }
+
+      if (!/^\d{2}\/\d{2}$/.test(formData.cardExpiry)) {
+        setError("La date d'expiration doit être au format MM/AA");
+        return;
+      }
+
+      if (formData.cardCvv.length < 3) {
+        setError("Le CVV doit contenir au moins 3 chiffres");
+        return;
+      }
+    }
+
     setSubmitting(true);
 
     try {
-      const userId = 1; // TODO: Get from auth context
-      
-      await orderService.createFromCart(cart!.id, userId, formData.paymentMethod);
-      
+      console.log("Creating order with:", {
+        cartId: cart!.id,
+        userId,
+        paymentMethod: formData.paymentMethod,
+        shippingAddress: formData.shippingAddress
+      });
+
+      const orderResponse = await orderService.createFromCart(
+        cart!.id,
+        userId,
+        formData.paymentMethod,
+        formData.shippingAddress
+      );
+
+      console.log("Order created successfully:", orderResponse.data);
+
       await cartService.clear(userId);
-      
+
+      console.log("Cart cleared, navigating to orders page");
       navigate("/orders", { state: { orderSuccess: true } });
     } catch (error: any) {
       console.error("Erreur création commande:", error);
-      alert(error.response?.data?.message || "Erreur lors de la commande");
+      console.error("Error details:", {
+        status: error.response?.status,
+        data: error.response?.data,
+        message: error.message
+      });
+      setError(error.response?.data?.message || "Erreur lors de la commande. Veuillez réessayer.");
     } finally {
       setSubmitting(false);
     }
@@ -105,6 +219,17 @@ export const Checkout = (): JSX.Element => {
         <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal] mb-8">
           Finaliser ma commande
         </h1>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-[20px] flex items-center gap-3">
+            <div className="w-6 h-6 bg-red-500 rounded-full flex items-center justify-center flex-shrink-0">
+              <span className="text-white text-sm font-bold">!</span>
+            </div>
+            <p className="[font-family:'Inter',Helvetica] font-medium text-red-700">
+              {error}
+            </p>
+          </div>
+        )}
 
         <form onSubmit={handleSubmit}>
           <div className="grid grid-cols-3 gap-8">
@@ -198,9 +323,7 @@ export const Checkout = (): JSX.Element => {
                         <Input
                           type="text"
                           value={formData.cardNumber}
-                          onChange={(e) =>
-                            setFormData({ ...formData, cardNumber: e.target.value })
-                          }
+                          onChange={handleCardNumberChange}
                           placeholder="1234 5678 9012 3456"
                           maxLength={19}
                           required={formData.paymentMethod === "CARD"}
@@ -232,9 +355,7 @@ export const Checkout = (): JSX.Element => {
                           <Input
                             type="text"
                             value={formData.cardExpiry}
-                            onChange={(e) =>
-                              setFormData({ ...formData, cardExpiry: e.target.value })
-                            }
+                            onChange={handleExpiryChange}
                             placeholder="MM/AA"
                             maxLength={5}
                             required={formData.paymentMethod === "CARD"}
@@ -249,11 +370,9 @@ export const Checkout = (): JSX.Element => {
                           <Input
                             type="text"
                             value={formData.cardCvv}
-                            onChange={(e) =>
-                              setFormData({ ...formData, cardCvv: e.target.value })
-                            }
+                            onChange={handleCvvChange}
                             placeholder="123"
-                            maxLength={3}
+                            maxLength={4}
                             required={formData.paymentMethod === "CARD"}
                             className="h-12 bg-white rounded-lg border border-[#33333333]"
                           />
@@ -273,16 +392,41 @@ export const Checkout = (): JSX.Element => {
                   </h2>
 
                   <div className="flex flex-col gap-3 mb-6">
-                    {cart?.items.map((item) => (
-                      <div key={item.productId} className="flex justify-between items-center text-sm">
-                        <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333]">
-                          {item.quantity}x Produit #{item.productId.slice(0, 8)}
-                        </span>
-                        <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333]">
-                          {(item.unitPrice * item.quantity).toLocaleString()} FCFA
-                        </span>
-                      </div>
-                    ))}
+                    {cartItemsWithProducts.length > 0 ? (
+                      cartItemsWithProducts.map((item) => (
+                        <div key={item.productId} className="flex items-center gap-3">
+                          <div className="w-12 h-12 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
+                            <img
+                              src={item.product?.imageUrls[0] || "/image-1-2.png"}
+                              alt={item.product?.name || "Product"}
+                              className="w-full h-full object-cover"
+                            />
+                          </div>
+                          <div className="flex-1">
+                            <p className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm line-clamp-1">
+                              {item.product?.name || `Produit #${item.productId.slice(0, 8)}`}
+                            </p>
+                            <p className="[font-family:'Inter',Helvetica] font-normal text-gray-600 text-xs">
+                              Quantité: {item.quantity}
+                            </p>
+                          </div>
+                          <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                            {(item.unitPrice * item.quantity).toLocaleString()} FCFA
+                          </span>
+                        </div>
+                      ))
+                    ) : (
+                      cart?.items.map((item) => (
+                        <div key={item.productId} className="flex justify-between items-center text-sm">
+                          <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333]">
+                            {item.quantity}x Produit #{item.productId.slice(0, 8)}
+                          </span>
+                          <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333]">
+                            {(item.unitPrice * item.quantity).toLocaleString()} FCFA
+                          </span>
+                        </div>
+                      ))
+                    )}
                   </div>
 
                   <div className="border-t border-gray-300 pt-4 mb-6">
