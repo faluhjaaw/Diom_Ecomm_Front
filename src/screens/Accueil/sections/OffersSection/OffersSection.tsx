@@ -38,7 +38,7 @@ export const OffersSection = (): JSX.Element => {
   };
 
   return (
-    <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3">
+    <header className="w-ful h-[85px] flex items-center bg-white pe-10 ps-8 gap-3">
       <div
         onClick={() => navigate('/')}
         className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
@@ -98,7 +98,7 @@ export const OffersSection = (): JSX.Element => {
         </button>
       </nav>
 
-      <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">
+      <form onSubmit={handleSearch} className="relative ml-[30px] flex-shrink-0">
         <div className="w-[370.06px] h-[52.47px] shadow-[0px_3px_14.77px_#00000040] rounded-[26.24px]">
           <Input
             type="text"

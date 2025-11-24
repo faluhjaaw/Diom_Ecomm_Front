@@ -137,7 +137,7 @@ export const Products = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3 border-b border-gray-200 sticky top-0 z-50">
+      <header className="w-ful h-[85px] flex items-center bg-white px-12 gap-3 border-b border-gray-200 sticky top-0 z-50">
         <div
           onClick={() => navigate('/')}
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
@@ -197,7 +197,7 @@ export const Products = (): JSX.Element => {
           </button>
         </nav>
 
-        <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">
+        <form onSubmit={handleSearch} className="relative ml-[30px] flex-shrink-0">
           <div className="w-[370.06px] h-[52.47px] shadow-[0px_3px_14.77px_#00000040] rounded-[26.24px]">
             <Input
               type="text"

@@ -75,14 +75,11 @@ export const Accueil = (): JSX.Element => {
 
       <footer className="w-full px-[73px] py-12 flex flex-col gap-8">
         <div className="flex items-start gap-8">
-          <div className="w-[38px] h-[38px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026]" />
+          <div className="w-[38px] h-[38px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026]"></div>
           <div className="flex-1">
             <h3 className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] mb-4">
               ShopSen
             </h3>
-            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[13px] tracking-[0] leading-[normal]">
-              perso xawma louma fiiy binde
-            </p>
           </div>
         </div>
 
@@ -162,21 +159,21 @@ export const Accueil = (): JSX.Element => {
               <img
                 className="mt-[5px] w-[30px] h-[31.68px] ml-[25px] object-cover"
                 alt="Payment method"
-                src="/image-18-2.png"
+                src="/images/icons/wave.png"
               />
             </div>
             <div className="w-20 h-[42px] bg-white rounded-[10px] border-[1.22px] border-solid border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a] flex items-center justify-center">
               <img
                 className="w-6 h-7 object-cover"
                 alt="Payment method"
-                src="/image-20.png"
+                src="/images/icons/om.png"
               />
             </div>
             <div className="w-20 h-[42px] flex bg-white rounded-[10px] overflow-hidden border-[1.22px] border-solid border-[#33333333] shadow-[0px_2.44px_7.45px_#0000001a]">
               <img
                 className="mt-[9px] w-[46px] h-6 ml-[17px] object-cover"
                 alt="Payment method"
-                src="/image-20-2.png"
+                src="/images/icons/visa.png"
               />
             </div>
           </div>
