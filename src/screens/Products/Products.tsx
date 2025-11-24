@@ -6,7 +6,7 @@ import { Card, CardContent } from "../../components/ui/card";
 import { productService } from "../../services/product.service";
 import { categoryService } from "../../services/category.service";
 import { Product, Category } from "../../types";
-import { SearchIcon, FilterIcon, ChevronDownIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
+import { SearchIcon, FilterIcon, ChevronDownIcon, ShoppingCartIcon, UserIcon, TagIcon, DollarSignIcon, StarIcon, PackageIcon } from "lucide-react";
 import { addToCart } from "../../lib/cart-utils";
 
 export const Products = (): JSX.Element => {
@@ -243,25 +243,34 @@ export const Products = (): JSX.Element => {
         </div>
 
         <div className="flex gap-8 flex-1 overflow-hidden">
-          <aside className="w-[280px] flex-shrink-0 overflow-y-auto scrollbar-hide">
-            <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
-              <CardContent className="p-6">
-                <div className="flex items-center gap-2 mb-6">
-                  <FilterIcon className="w-5 h-5 text-[#333333]" />
-                  <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal]">
-                    Filtres
-                  </h2>
+          <aside className="w-[300px] flex-shrink-0 overflow-y-auto scrollbar-hide">
+            <Card className="bg-white rounded-[20px] shadow-[0px_4px_12px_rgba(0,0,0,0.08)] border border-gray-100">
+              <CardContent className="p-0">
+                {/* Header */}
+                <div className="p-6 pb-4 border-b border-gray-100">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 bg-[#1071b5] bg-opacity-10 rounded-lg flex items-center justify-center">
+                      <FilterIcon className="w-5 h-5 text-[#1071b5]" />
+                    </div>
+                    <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-xl tracking-[0] leading-[normal]">
+                      Filtres
+                    </h2>
+                  </div>
                 </div>
 
-                <div className="flex flex-col gap-6">
-                  <div className="flex flex-col gap-2">
-                    <label className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm tracking-[0] leading-[normal]">
-                      Catégorie
-                    </label>
+                <div className="p-6 flex flex-col gap-5">
+                  {/* Catégorie */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <TagIcon className="w-4 h-4 text-[#1071b5]" />
+                      <label className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                        Catégorie
+                      </label>
+                    </div>
                     <select
                       value={filters.categoryId}
                       onChange={(e) => setFilters({ ...filters, categoryId: e.target.value })}
-                      className="h-10 bg-white rounded-lg border border-[#33333333] px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm"
+                      className="h-11 bg-gray-50 rounded-lg border border-gray-200 px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm focus:outline-none focus:ring-2 focus:ring-[#1071b5] focus:border-transparent transition-all"
                     >
                       <option value="">Toutes les catégories</option>
                       {categories.map((cat) => (
@@ -272,57 +281,75 @@ export const Products = (): JSX.Element => {
                     </select>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm tracking-[0] leading-[normal]">
-                      Prix minimum (FCFA)
-                    </label>
-                    <Input
-                      type="number"
-                      value={filters.minPrice}
-                      onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
-                      placeholder="0"
-                      className="h-10 bg-white rounded-lg border border-[#33333333]"
-                    />
+                  <div className="h-px bg-gray-100"></div>
+
+                  {/* Prix */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <DollarSignIcon className="w-4 h-4 text-[#1071b5]" />
+                      <label className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                        Fourchette de prix (FCFA)
+                      </label>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Input
+                          type="number"
+                          value={filters.minPrice}
+                          onChange={(e) => setFilters({ ...filters, minPrice: e.target.value })}
+                          placeholder="Min"
+                          className="h-11 bg-gray-50 rounded-lg border-gray-200 focus:ring-2 focus:ring-[#1071b5] text-sm"
+                        />
+                      </div>
+                      <div>
+                        <Input
+                          type="number"
+                          value={filters.maxPrice}
+                          onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
+                          placeholder="Max"
+                          className="h-11 bg-gray-50 rounded-lg border-gray-200 focus:ring-2 focus:ring-[#1071b5] text-sm"
+                        />
+                      </div>
+                    </div>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm tracking-[0] leading-[normal]">
-                      Prix maximum (FCFA)
-                    </label>
-                    <Input
-                      type="number"
-                      value={filters.maxPrice}
-                      onChange={(e) => setFilters({ ...filters, maxPrice: e.target.value })}
-                      placeholder="1000000"
-                      className="h-10 bg-white rounded-lg border border-[#33333333]"
-                    />
-                  </div>
+                  <div className="h-px bg-gray-100"></div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm tracking-[0] leading-[normal]">
-                      Note minimum
-                    </label>
+                  {/* Note minimum */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <StarIcon className="w-4 h-4 text-[#1071b5]" />
+                      <label className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                        Note minimum
+                      </label>
+                    </div>
                     <select
                       value={filters.minRating}
                       onChange={(e) => setFilters({ ...filters, minRating: e.target.value })}
-                      className="h-10 bg-white rounded-lg border border-[#33333333] px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm"
+                      className="h-11 bg-gray-50 rounded-lg border border-gray-200 px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm focus:outline-none focus:ring-2 focus:ring-[#1071b5] focus:border-transparent transition-all"
                     >
                       <option value="">Toutes les notes</option>
-                      <option value="4">4★ et plus</option>
-                      <option value="3">3★ et plus</option>
-                      <option value="2">2★ et plus</option>
-                      <option value="1">1★ et plus</option>
+                      <option value="4">★★★★ 4 et plus</option>
+                      <option value="3">★★★ 3 et plus</option>
+                      <option value="2">★★ 2 et plus</option>
+                      <option value="1">★ 1 et plus</option>
                     </select>
                   </div>
 
-                  <div className="flex flex-col gap-2">
-                    <label className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm tracking-[0] leading-[normal]">
-                      État
-                    </label>
+                  <div className="h-px bg-gray-100"></div>
+
+                  {/* État */}
+                  <div className="flex flex-col gap-3">
+                    <div className="flex items-center gap-2">
+                      <PackageIcon className="w-4 h-4 text-[#1071b5]" />
+                      <label className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                        État du produit
+                      </label>
+                    </div>
                     <select
                       value={filters.condition}
                       onChange={(e) => setFilters({ ...filters, condition: e.target.value })}
-                      className="h-10 bg-white rounded-lg border border-[#33333333] px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm"
+                      className="h-11 bg-gray-50 rounded-lg border border-gray-200 px-3 [font-family:'Inter',Helvetica] text-[#333333] text-sm focus:outline-none focus:ring-2 focus:ring-[#1071b5] focus:border-transparent transition-all"
                     >
                       <option value="">Tous les états</option>
                       <option value="NEW">Neuf</option>
@@ -330,22 +357,23 @@ export const Products = (): JSX.Element => {
                       <option value="REFURBISHED">Reconditionné</option>
                     </select>
                   </div>
+                </div>
 
-                  <div className="flex flex-col gap-3 pt-4">
-                    <Button
-                      onClick={applyFilters}
-                      className="w-full h-10 bg-[#1071b5] rounded-lg [font-family:'Inter',Helvetica] font-semibold text-white text-sm hover:bg-[#0d5a94]"
-                    >
-                      Appliquer les filtres
-                    </Button>
-                    <Button
-                      variant="outline"
-                      onClick={resetFilters}
-                      className="w-full h-10 bg-white rounded-lg border-[1.22px] border-[#33333333] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm"
-                    >
-                      Réinitialiser
-                    </Button>
-                  </div>
+                {/* Actions */}
+                <div className="p-6 pt-4 border-t border-gray-100 flex flex-col gap-3 bg-gray-50 rounded-b-[20px]">
+                  <Button
+                    onClick={applyFilters}
+                    className="w-full h-11 bg-[#1071b5] rounded-lg [font-family:'Inter',Helvetica] font-semibold text-white text-sm hover:bg-[#0d5a94] shadow-md hover:shadow-lg transition-all"
+                  >
+                    Appliquer les filtres
+                  </Button>
+                  <Button
+                    variant="outline"
+                    onClick={resetFilters}
+                    className="w-full h-11 bg-white rounded-lg border border-gray-200 [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm hover:bg-gray-50 transition-all"
+                  >
+                    Réinitialiser
+                  </Button>
                 </div>
               </CardContent>
             </Card>
