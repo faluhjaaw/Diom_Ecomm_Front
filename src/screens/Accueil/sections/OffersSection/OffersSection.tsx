@@ -84,6 +84,18 @@ export const OffersSection = (): JSX.Element => {
             </div>
           )}
         </div>
+
+        <button
+          onClick={() => navigate('/products?deals=true')}
+          className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+          Deals
+        </button>
+
+        <button
+          onClick={() => navigate('/products?nouveaute=true')}
+          className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+          Nouveauté
+        </button>
       </nav>
 
       <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">

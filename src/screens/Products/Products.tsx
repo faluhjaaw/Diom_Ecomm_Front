@@ -183,6 +183,18 @@ export const Products = (): JSX.Element => {
               </div>
             )}
           </div>
+
+          <button
+            onClick={() => setSearchParams({ deals: 'true' })}
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Deals
+          </button>
+
+          <button
+            onClick={() => setSearchParams({ nouveaute: 'true' })}
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Nouveauté
+          </button>
         </nav>
 
         <form onSubmit={handleSearch} className="relative ml-[70px] flex-shrink-0">
@@ -231,7 +243,7 @@ export const Products = (): JSX.Element => {
         </div>
 
         <div className="flex gap-8">
-          <aside className="w-[280px] flex-shrink-0">
+          <aside className="w-[280px] flex-shrink-0 sticky top-8 self-start">
             <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-6">

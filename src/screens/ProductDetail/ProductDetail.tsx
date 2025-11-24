@@ -7,7 +7,7 @@ import { productService } from "../../services/product.service";
 import { avisService } from "../../services/avis.service";
 import { Product } from "../../types";
 import { addToCart } from "../../lib/cart-utils";
-import { ArrowLeftIcon } from "lucide-react";
+import { ArrowLeftIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
 
 export const ProductDetail = (): JSX.Element => {
   const { id } = useParams<{ id: string }>();
@@ -99,7 +99,7 @@ export const ProductDetail = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-full h-[85px] flex items-center bg-white px-7 gap-3 border-b border-gray-200">
+      <header className="w-full h-[85px] flex items-center bg-white px-14 gap-3 border-b border-gray-200">
         <div
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
           onClick={() => navigate("/")}
@@ -109,6 +109,28 @@ export const ProductDetail = (): JSX.Element => {
           onClick={() => navigate("/")}
         >
           ShopSen
+        </div>
+
+        <div className="flex items-center gap-[11px] ml-auto">
+          <UserIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+            onClick={() => navigate('/profile')}
+          />
+          <button
+            onClick={() => navigate('/profile')}
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Compte
+          </button>
+        </div>
+
+        <div className="flex items-center gap-[5.7px] ml-[30.9px]">
+          <ShoppingCartIcon className="w-5 h-5 text-[#333333] hover: cursor-pointer"
+            onClick={() => navigate('/cart')}
+          />
+          <button
+            onClick={() => navigate('/cart')}
+            className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-[17px] tracking-[0] leading-[normal] hover:text-[#1071b5] transition-colors">
+            Panier
+          </button>
         </div>
       </header>
 
