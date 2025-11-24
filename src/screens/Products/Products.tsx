@@ -137,7 +137,7 @@ export const Products = (): JSX.Element => {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3 border-b border-gray-200">
+      <header className="w-ful h-[85px] flex items-center bg-white px-14 gap-3 border-b border-gray-200 sticky top-0 z-50">
         <div
           onClick={() => navigate('/')}
           className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
@@ -235,15 +235,15 @@ export const Products = (): JSX.Element => {
         </div>
       </header>
 
-      <div className="max-w-[1440px] mx-auto px-12 py-8">
-        <div className="mb-8">
+      <div className="max-w-[1440px] mx-auto px-12 py-8 flex flex-col h-[calc(100vh-85px)]">
+        <div className="mb-8 flex-shrink-0">
           <h1 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-3xl tracking-[0] leading-[normal]">
             Catalogue de produits
           </h1>
         </div>
 
-        <div className="flex gap-8">
-          <aside className="w-[280px] flex-shrink-0 sticky top-8 self-start">
+        <div className="flex gap-8 flex-1 overflow-hidden">
+          <aside className="w-[280px] flex-shrink-0 overflow-y-auto scrollbar-hide">
             <Card className="bg-[#f5f6f6] rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
               <CardContent className="p-6">
                 <div className="flex items-center gap-2 mb-6">
@@ -351,7 +351,7 @@ export const Products = (): JSX.Element => {
             </Card>
           </aside>
 
-          <main className="flex-1">
+          <main className="flex-1 overflow-y-auto scrollbar-hide">
             {loading ? (
               <div className="flex items-center justify-center h-64">
                 <p className="text-xl text-[#333333]">Chargement...</p>
