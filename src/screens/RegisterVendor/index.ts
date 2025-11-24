@@ -1,0 +1,1 @@
+export { RegisterVendor } from './RegisterVendor';

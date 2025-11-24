@@ -32,7 +32,7 @@ export const DailyDealsSection = ({ products: initialProducts }: Props): JSX.Ele
   const fetchCategories = async () => {
     try {
       const { data } = await categoryService.getAll();
-      setCategories(data.slice(0, 7)); // Limite à 7 catégories
+      setCategories(data.slice(0, 12)); // Limite à 7 catégories
     } catch (error) {
       console.error("Erreur chargement catégories:", error);
     }

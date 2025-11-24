@@ -4,6 +4,7 @@ import { Button } from "../../components/ui/button";
 import { Input } from "../../components/ui/input";
 import { Card, CardContent } from "../../components/ui/card";
 import { authService } from "../../services/auth.service";
+import { userService } from "../../services/user.service";
 
 export const Login = (): JSX.Element => {
   const navigate = useNavigate();
@@ -21,7 +22,17 @@ export const Login = (): JSX.Element => {
       const { data } = await authService.login(email, password);
       localStorage.setItem("token", data.token);
       localStorage.setItem("userEmail", email);
-      navigate("/");
+
+      // Récupérer les informations de l'utilisateur pour obtenir son rôle
+      const { data: userData } = await userService.getUserByEmail(email);
+      localStorage.setItem("userRole", userData.role);
+
+      // Rediriger selon le rôle
+      if (userData.role === "VENDEUR") {
+        navigate("/vendor-dashboard");
+      } else {
+        navigate("/");
+      }
     } catch (err: any) {
       setError(err.response?.data?.message || "Email ou mot de passe incorrect");
     } finally {
@@ -116,6 +127,15 @@ export const Login = (): JSX.Element => {
                 className="[font-family:'Inter',Helvetica] font-medium text-[#1071b5] hover:underline"
               >
                 S'inscrire
+              </button>
+            </p>
+            <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm tracking-[0] leading-[normal] mt-2">
+              Vous êtes un vendeur?{" "}
+              <button
+                onClick={() => navigate("/register-vendeur")}
+                className="[font-family:'Inter',Helvetica] font-medium text-[#1071b5] hover:underline"
+              >
+                Créer un compte vendeur
               </button>
             </p>
           </div>
