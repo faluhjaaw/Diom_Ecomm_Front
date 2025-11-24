@@ -2,21 +2,24 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { Button } from "../../components/ui/button";
 import { Card, CardContent } from "../../components/ui/card";
+import { Badge } from "../../components/ui/badge";
 import { authService } from "../../services/auth.service";
 import { userService } from "../../services/user.service";
 import { productService } from "../../services/product.service";
-import { Product } from "../../types";
-import { Store, Package, DollarSign, TrendingUp, User, LogOut } from "lucide-react";
+import { Product, Order } from "../../types";
+import { Store, Package, DollarSign, TrendingUp, User, LogOut, Clock, CheckCircle, Truck, XCircle } from "lucide-react";
 
 export const VendorDashboard = (): JSX.Element => {
   const navigate = useNavigate();
   const [vendorId, setVendorId] = useState<number | null>(null);
   const [products, setProducts] = useState<Product[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState({
     totalProducts: 0,
     totalRevenue: 0,
     averageRating: 0,
+    totalOrders: 0,
   });
 
   useEffect(() => {
@@ -176,12 +179,85 @@ export const VendorDashboard = (): JSX.Element => {
 
         setProducts(mockProducts);
 
+        // Créer des commandes simulées
+        const mockOrders: Order[] = [
+          {
+            id: "order-1",
+            userId: 1001,
+            items: [
+              { productId: "sport-1", quantity: 2, unitPrice: 45000 },
+              { productId: "sport-4", quantity: 1, unitPrice: 22000 }
+            ],
+            total: 112000,
+            status: "DELIVERED",
+            shippingAddress: "Dakar, Liberté 6",
+            paymentMethod: "Wave",
+            createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: "order-2",
+            userId: 1002,
+            items: [
+              { productId: "sport-6", quantity: 1, unitPrice: 89000 }
+            ],
+            total: 89000,
+            status: "SHIPPED",
+            shippingAddress: "Dakar, Almadies",
+            paymentMethod: "Orange Money",
+            createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: "order-3",
+            userId: 1003,
+            items: [
+              { productId: "sport-2", quantity: 1, unitPrice: 95000 },
+              { productId: "sport-1", quantity: 1, unitPrice: 45000 }
+            ],
+            total: 140000,
+            status: "PAID",
+            shippingAddress: "Dakar, Mermoz",
+            paymentMethod: "Visa",
+            createdAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 1 * 24 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: "order-4",
+            userId: 1004,
+            items: [
+              { productId: "sport-8", quantity: 1, unitPrice: 185000 }
+            ],
+            total: 185000,
+            status: "CREATED",
+            shippingAddress: "Dakar, Ouakam",
+            paymentMethod: "Wave",
+            createdAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000).toISOString()
+          },
+          {
+            id: "order-5",
+            userId: 1005,
+            items: [
+              { productId: "sport-3", quantity: 2, unitPrice: 38000 },
+              { productId: "sport-7", quantity: 1, unitPrice: 75000 }
+            ],
+            total: 151000,
+            status: "DELIVERED",
+            shippingAddress: "Dakar, Plateau",
+            paymentMethod: "Orange Money",
+            createdAt: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            updatedAt: new Date(Date.now() - 4 * 24 * 60 * 60 * 1000).toISOString()
+          }
+        ];
+
+        setOrders(mockOrders);
+
         // Calculer les statistiques avec les données de démonstration
         const totalProducts = mockProducts.length;
-        const totalRevenue = mockProducts.reduce(
-          (sum, product) => sum + product.price * Math.floor(Math.random() * 5 + 3),
-          0
-        );
+        const totalRevenue = mockOrders
+          .filter(order => order.status === "DELIVERED")
+          .reduce((sum, order) => sum + order.total, 0);
         const averageRating =
           mockProducts.reduce((sum, product) => sum + product.rating, 0) / totalProducts;
 
@@ -189,6 +265,7 @@ export const VendorDashboard = (): JSX.Element => {
           totalProducts,
           totalRevenue,
           averageRating: Math.round(averageRating * 10) / 10,
+          totalOrders: mockOrders.length,
         });
       } else {
         setProducts(vendorProducts);
@@ -207,6 +284,7 @@ export const VendorDashboard = (): JSX.Element => {
           totalProducts,
           totalRevenue,
           averageRating: Math.round(averageRating * 10) / 10,
+          totalOrders: 0,
         });
       }
     } catch (error) {
@@ -288,7 +366,7 @@ export const VendorDashboard = (): JSX.Element => {
         </h1>
 
         {/* Statistiques */}
-        <div className="grid grid-cols-3 gap-6 mb-12">
+        <div className="grid grid-cols-4 gap-6 mb-12">
           <Card className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
             <CardContent className="p-6">
               <div className="flex items-center justify-between">
@@ -310,7 +388,7 @@ export const VendorDashboard = (): JSX.Element => {
               <div className="flex items-center justify-between">
                 <div>
                   <p className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm mb-2">
-                    Revenus Estimés
+                    Revenus Livrés
                   </p>
                   <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-bold text-green-700 text-4xl">
                     {stats.totalRevenue.toLocaleString()}
@@ -342,6 +420,25 @@ export const VendorDashboard = (): JSX.Element => {
               </div>
             </CardContent>
           </Card>
+
+          <Card className="bg-gradient-to-br from-purple-50 to-purple-100 rounded-[20px] shadow-[0px_2px_5.8px_1px_#0000001a] border-0">
+            <CardContent className="p-6">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="[font-family:'Inter',Helvetica] font-medium text-[#333333] text-sm mb-2">
+                    Commandes
+                  </p>
+                  <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-bold text-purple-700 text-4xl">
+                    {stats.totalOrders}
+                  </p>
+                  <p className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-xs">
+                    Total
+                  </p>
+                </div>
+                <Truck className="w-12 h-12 text-purple-700 opacity-50" />
+              </div>
+            </CardContent>
+          </Card>
         </div>
 
         {/* Actions rapides */}
@@ -370,6 +467,106 @@ export const VendorDashboard = (): JSX.Element => {
             </Button>
           </div>
         </div>
+
+        {/* Commandes récentes */}
+        {orders.length > 0 && (
+          <div className="mb-12">
+            <h2 className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-2xl tracking-[0] leading-[normal] mb-6">
+              Commandes récentes ({orders.length})
+            </h2>
+
+            <Card className="bg-white rounded-[20px] shadow-[0px_4px_12px_rgba(0,0,0,0.08)] border border-gray-100">
+              <CardContent className="p-0">
+                <div className="overflow-x-auto">
+                  <table className="w-full">
+                    <thead className="bg-gray-50 border-b border-gray-200">
+                      <tr>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          N° Commande
+                        </th>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          Articles
+                        </th>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          Total
+                        </th>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          Statut
+                        </th>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          Paiement
+                        </th>
+                        <th className="px-6 py-4 text-left [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                          Date
+                        </th>
+                      </tr>
+                    </thead>
+                    <tbody className="divide-y divide-gray-100">
+                      {orders.map((order) => (
+                        <tr key={order.id} className="hover:bg-gray-50 transition-colors">
+                          <td className="px-6 py-4">
+                            <span className="[font-family:'Inter',Helvetica] font-medium text-[#1071b5] text-sm">
+                              {order.id}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm">
+                              {order.items.length} article{order.items.length > 1 ? 's' : ''}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="[font-family:'Inter',Helvetica] font-semibold text-[#333333] text-sm">
+                              {order.total.toLocaleString()} FCFA
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <Badge
+                              className={`
+                                ${order.status === 'DELIVERED' ? 'bg-green-100 text-green-700 hover:bg-green-100' : ''}
+                                ${order.status === 'SHIPPED' ? 'bg-blue-100 text-blue-700 hover:bg-blue-100' : ''}
+                                ${order.status === 'PAID' ? 'bg-yellow-100 text-yellow-700 hover:bg-yellow-100' : ''}
+                                ${order.status === 'CREATED' ? 'bg-gray-100 text-gray-700 hover:bg-gray-100' : ''}
+                                ${order.status === 'CANCELLED' ? 'bg-red-100 text-red-700 hover:bg-red-100' : ''}
+                                [font-family:'Inter',Helvetica] font-medium text-xs px-3 py-1
+                              `}
+                            >
+                              <div className="flex items-center gap-1">
+                                {order.status === 'DELIVERED' && <CheckCircle className="w-3 h-3" />}
+                                {order.status === 'SHIPPED' && <Truck className="w-3 h-3" />}
+                                {order.status === 'PAID' && <Clock className="w-3 h-3" />}
+                                {order.status === 'CREATED' && <Clock className="w-3 h-3" />}
+                                {order.status === 'CANCELLED' && <XCircle className="w-3 h-3" />}
+                                {order.status === 'DELIVERED' && 'Livrée'}
+                                {order.status === 'SHIPPED' && 'Expédiée'}
+                                {order.status === 'PAID' && 'Payée'}
+                                {order.status === 'CREATED' && 'En attente'}
+                                {order.status === 'CANCELLED' && 'Annulée'}
+                              </div>
+                            </Badge>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-sm">
+                              {order.paymentMethod}
+                            </span>
+                          </td>
+                          <td className="px-6 py-4">
+                            <span className="[font-family:'Inter',Helvetica] font-normal text-gray-600 text-sm">
+                              {new Date(order.createdAt).toLocaleDateString('fr-FR', {
+                                day: 'numeric',
+                                month: 'short',
+                                year: 'numeric'
+                              })}
+                            </span>
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
+              </CardContent>
+            </Card>
+          </div>
+        )}
 
         {/* Liste des produits */}
         <div>
