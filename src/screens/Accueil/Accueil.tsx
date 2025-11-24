@@ -59,7 +59,6 @@ export const Accueil = (): JSX.Element => {
       <BrandShowcaseSection />
       <SpecialOffersSection />
       <PromotionsSection />
-      <BoutiqueSection />
       <BestSellersSection products={products.slice(8, 11)} />
       <FeaturedProductsSection />
 
@@ -69,9 +68,7 @@ export const Accueil = (): JSX.Element => {
         </h2>
       </section>
 
-      <ProductGridSection />
-      <ComponentNodeSection />
-      <HeroBannerSection />
+
 
       <footer className="w-full px-[73px] py-12 flex flex-col gap-8">
         <div className="flex items-start gap-8">

@@ -1,5 +1,5 @@
 // src/screens/Accueil/sections/OffersSection/OffersSection.tsx
-import { ChevronDownIcon, SearchIcon, ShoppingCartIcon, UserIcon } from "lucide-react";
+import { ChevronDownIcon, SearchIcon, ShoppingCartIcon, UserIcon, Store } from "lucide-react";
 import React, { useState, useEffect } from "react";
 import { Input } from "../../../../components/ui/input";
 import { useNavigate } from "react-router-dom";
@@ -41,8 +41,10 @@ export const OffersSection = (): JSX.Element => {
     <header className="w-ful h-[85px] flex items-center bg-white pe-10 ps-8 gap-3">
       <div
         onClick={() => navigate('/')}
-        className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
-      />
+        className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer flex items-center justify-center"
+      >
+        <Store className="w-5 h-5 text-white" />
+      </div>
 
       <div
         onClick={() => navigate('/')}

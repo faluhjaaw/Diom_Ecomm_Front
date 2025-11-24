@@ -32,7 +32,7 @@ export const FeaturedProductsSection = (): JSX.Element => {
             </h2>
 
             <p className="[text-shadow:0px_2px_23px_#00000026] [font-family:'Inter',Helvetica] font-normal text-[#333333] text-[22px] tracking-[0] leading-[normal]">
-              sur ShopSen.con
+              sur ShopSen.com
             </p>
 
             <Button className="w-[159px] h-[52px] rounded-[26.24px] bg-[#003d29] shadow-[0px_3px_14.77px_#00000040] [text-shadow:0px_1.7px_21.63px_#00000026] text-[21px] [font-family:'Inter',Helvetica] font-semibold text-white tracking-[0] leading-[normal] hover:bg-[#003d29]/90">

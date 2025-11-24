@@ -6,7 +6,7 @@ import { cartService } from "../../services/cart.service";
 import { userService } from "../../services/user.service";
 import { productService } from "../../services/product.service";
 import { Cart, Product } from "../../types";
-import { Trash2Icon, ShoppingCartIcon, UserIcon, PackageIcon } from "lucide-react";
+import { Trash2Icon, ShoppingCartIcon, UserIcon, PackageIcon, Store } from "lucide-react";
 
 interface CartItemWithProduct {
   productId: string;
@@ -129,9 +129,11 @@ export const CartPage = (): JSX.Element => {
       <header className="w-full h-[85px] bg-white border-b border-gray-200 px-8">
         <div className="max-w-[1400px] mx-auto px-12 h-full flex items-center gap-3">
           <div
-            className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer"
+            className="w-[38.16px] h-[38.16px] bg-[#1071b5] rounded-[19.08px] shadow-[0px_1.7px_9.84px_#00000026] flex-shrink-0 cursor-pointer flex items-center justify-center"
             onClick={() => navigate("/")}
-          />
+          >
+            <Store className="w-5 h-5 text-white" />
+          </div>
           <div
             className="[text-shadow:0px_1.7px_21.63px_#0000000a] [font-family:'Inter',Helvetica] font-semibold text-[#1071b5] text-[20.4px] tracking-[0] leading-[normal] flex-shrink-0 cursor-pointer"
             onClick={() => navigate("/")}
