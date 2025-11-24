@@ -51,15 +51,27 @@ export const VendorDashboard = (): JSX.Element => {
         (product: Product) => product.vendorId === userData.id
       );
 
-      // Si le vendeur n'a pas de produits, créer des données de démonstration
-      if (vendorProducts.length === 0) {
+      // Récupérer les produits ajoutés localement
+      const localProductsStr = localStorage.getItem("vendorProducts");
+      const localProducts = localProductsStr ? JSON.parse(localProductsStr) : [];
+
+      // Filtrer les produits locaux pour ce vendeur uniquement
+      const vendorLocalProducts = localProducts.filter(
+        (product: Product) => product.vendorId === userData.id
+      );
+
+      // Combiner les produits de l'API et du localStorage
+      const combinedProducts = [...vendorProducts, ...vendorLocalProducts];
+
+      // Si le vendeur n'a pas de produits (ni de l'API ni du localStorage), créer des données de démonstration
+      if (combinedProducts.length === 0) {
         const mockProducts: Product[] = [
           {
   id: "sport-1",
   name: "Ballon de Football Adidas Pro",
   description: "Ballon taille 5 haute performance utilisé en compétition",
-  price: 45000,
-  imageUrls: ["https://th.bing.com/th/id/OIP.81whec9gozIMqk7GQPGgYwHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"],
+  price: 15000,
+  imageUrls: ["https://tse3.mm.bing.net/th/id/OIP.V7vM1hS5lwQuq6cFlI7dWAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
   stock: 20,
@@ -73,7 +85,7 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-2",
   name: "Raquette de Tennis Wilson Ultra",
   description: "Raquette légère avec un excellent contrôle pour joueurs intermédiaires",
-  price: 95000,
+  price: 85000,
   imageUrls: ["https://www.avantage-service.com/4569-large_default/wilson-ultra-100-v3-300-g.jpg"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
@@ -88,7 +100,7 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-3",
   name: "Gants de Boxe Everlast Pro",
   description: "Gants 12 oz rembourrés pour entraînement intensif",
-  price: 38000,
+  price: 45000,
   imageUrls: ["https://th.bing.com/th/id/R.00bc511c1c11ccf7007a200a811a5096?rik=YymIxhKhLyW1Vg&riu=http%3a%2f%2fflexequipment.com.au%2fcdn%2fshop%2ffiles%2f4532.jpg%3fv%3d1705645897&ehk=vfeYtyiZT9Y1b5BFOzN2wKmK31GPEBdZI3%2bLcHCGC8Q%3d&risl=&pid=ImgRaw&r=0"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
@@ -103,7 +115,7 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-4",
   name: "Tapis de Yoga Antidérapant",
   description: "Tapis 183x61cm avec grip renforcé pour séances de yoga et fitness",
-  price: 22000,
+  price: 25000,
   imageUrls: ["https://http2.mlstatic.com/D_NQ_NP_926453-MLM49484880974_032022-O.webp"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
@@ -118,7 +130,7 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-5",
   name: "Ballon de Basketball Spalding Street",
   description: "Ballon outdoor résistant pour jeu en extérieur",
-  price: 35000,
+  price: 38000,
   imageUrls: ["https://www.ballonbasket.fr/images/produits/zoom/ballon-de-basket-spalding-tf-1000-legacy-pro-2020-taille-7_2026.jpg"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
@@ -133,11 +145,11 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-6",
   name: "Chaussures de Running Nike Air Zoom",
   description: "Chaussures légères avec amorti optimal pour longues distances",
-  price: 89000,
+  price: 95000,
   imageUrls: ["https://th.bing.com/th/id/OIP.81whec9gozIMqk7GQPGgYwHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
-  stock: 22,
+  stock: 20,
   rating: 4.8,
   brand: "Nike",
   condition: "NEW",
@@ -148,7 +160,7 @@ export const VendorDashboard = (): JSX.Element => {
   id: "sport-7",
   name: "Haltères Ajustables 10KG",
   description: "Paires d’haltères réglables pour entraînement musculaire",
-  price: 75000,
+  price: 45000,
   imageUrls: ["https://media.cdnws.com/_i/127542/677/3718/78/haltere-hexagonale-10-kg-x1.jpeg"],
   subCategoryId: "68ee26ea8256e07e8ce7a422",
   vendorId: userData.id,
@@ -268,16 +280,17 @@ export const VendorDashboard = (): JSX.Element => {
           totalOrders: mockOrders.length,
         });
       } else {
-        setProducts(vendorProducts);
+        // Utiliser les produits combinés (API + localStorage)
+        setProducts(combinedProducts);
 
-        // Calculer les statistiques avec les données réelles
-        const totalProducts = vendorProducts.length;
-        const totalRevenue = vendorProducts.reduce(
+        // Calculer les statistiques avec les données réelles (produits combinés)
+        const totalProducts = combinedProducts.length;
+        const totalRevenue = combinedProducts.reduce(
           (sum: number, product: Product) => sum + product.price * (10 - product.stock),
           0
         );
         const averageRating =
-          vendorProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
+          combinedProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
           (totalProducts || 1);
 
         setStats({
@@ -454,6 +467,7 @@ export const VendorDashboard = (): JSX.Element => {
               Gérer mon profil
             </Button>
             <Button
+              onClick={() => navigate("/add-product")}
               variant="outline"
               className="h-16 bg-white rounded-[20px] border-[1.22px] border-[#33333333] [font-family:'Inter',Helvetica] font-semibold text-[#333333] text-base hover:bg-gray-50"
             >
@@ -584,7 +598,9 @@ export const VendorDashboard = (): JSX.Element => {
                 <p className="[font-family:'Inter',Helvetica] font-normal text-[#333333] text-base mb-6">
                   Commencez par ajouter votre premier produit
                 </p>
-                <Button className="h-12 px-8 bg-[#1071b5] rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [font-family:'Inter',Helvetica] font-semibold text-white text-base hover:bg-[#0d5a94]">
+                <Button
+                  onClick={() => navigate("/add-product")}
+                  className="h-12 px-8 bg-[#1071b5] rounded-[26.24px] shadow-[0px_3px_14.77px_#00000040] [font-family:'Inter',Helvetica] font-semibold text-white text-base hover:bg-[#0d5a94]">
                   Ajouter un produit
                 </Button>
               </CardContent>

@@ -11,6 +11,7 @@ import { Orders } from "../screens/Orders/Orders";
 import { Profile } from "../screens/Profile/Profile";
 import { VendorProfile } from "../screens/VendorProfile";
 import { VendorDashboard } from "../screens/VendorDashboard";
+import { AddProduct } from "../screens/AddProduct";
 import { Reviews } from "../screens/Reviews/Reviews";
 
 export const router = createBrowserRouter([
@@ -61,6 +62,10 @@ export const router = createBrowserRouter([
   {
     path: "/vendor-dashboard",
     element: <VendorDashboard />,
+  },
+  {
+    path: "/add-product",
+    element: <AddProduct />,
   },
   {
     path: "/reviews",
