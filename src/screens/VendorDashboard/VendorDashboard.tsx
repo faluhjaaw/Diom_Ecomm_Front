@@ -47,23 +47,168 @@ export const VendorDashboard = (): JSX.Element => {
       const vendorProducts = allProducts.filter(
         (product: Product) => product.vendorId === userData.id
       );
-      setProducts(vendorProducts);
 
-      // Calculer les statistiques
-      const totalProducts = vendorProducts.length;
-      const totalRevenue = vendorProducts.reduce(
-        (sum: number, product: Product) => sum + product.price * (10 - product.stock),
-        0
-      );
-      const averageRating =
-        vendorProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
-        (totalProducts || 1);
+      // Si le vendeur n'a pas de produits, créer des données de démonstration
+      if (vendorProducts.length === 0) {
+        const mockProducts: Product[] = [
+          {
+  id: "sport-1",
+  name: "Ballon de Football Adidas Pro",
+  description: "Ballon taille 5 haute performance utilisé en compétition",
+  price: 45000,
+  imageUrls: ["https://th.bing.com/th/id/OIP.81whec9gozIMqk7GQPGgYwHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 20,
+  rating: 4.6,
+  brand: "Adidas",
+  condition: "NEW",
+  tags: ["football", "ballon"],
+  specifications: {}
+},
+{
+  id: "sport-2",
+  name: "Raquette de Tennis Wilson Ultra",
+  description: "Raquette légère avec un excellent contrôle pour joueurs intermédiaires",
+  price: 95000,
+  imageUrls: ["https://www.avantage-service.com/4569-large_default/wilson-ultra-100-v3-300-g.jpg"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 15,
+  rating: 4.7,
+  brand: "Wilson",
+  condition: "NEW",
+  tags: ["tennis", "raquette"],
+  specifications: {}
+},
+{
+  id: "sport-3",
+  name: "Gants de Boxe Everlast Pro",
+  description: "Gants 12 oz rembourrés pour entraînement intensif",
+  price: 38000,
+  imageUrls: ["https://th.bing.com/th/id/R.00bc511c1c11ccf7007a200a811a5096?rik=YymIxhKhLyW1Vg&riu=http%3a%2f%2fflexequipment.com.au%2fcdn%2fshop%2ffiles%2f4532.jpg%3fv%3d1705645897&ehk=vfeYtyiZT9Y1b5BFOzN2wKmK31GPEBdZI3%2bLcHCGC8Q%3d&risl=&pid=ImgRaw&r=0"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 25,
+  rating: 4.5,
+  brand: "Everlast",
+  condition: "NEW",
+  tags: ["boxe", "gants"],
+  specifications: {}
+},
+{
+  id: "sport-4",
+  name: "Tapis de Yoga Antidérapant",
+  description: "Tapis 183x61cm avec grip renforcé pour séances de yoga et fitness",
+  price: 22000,
+  imageUrls: ["https://http2.mlstatic.com/D_NQ_NP_926453-MLM49484880974_032022-O.webp"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 30,
+  rating: 4.6,
+  brand: "Domyos",
+  condition: "NEW",
+  tags: ["yoga", "fitness"],
+  specifications: {}
+},
+{
+  id: "sport-5",
+  name: "Ballon de Basketball Spalding Street",
+  description: "Ballon outdoor résistant pour jeu en extérieur",
+  price: 35000,
+  imageUrls: ["https://www.ballonbasket.fr/images/produits/zoom/ballon-de-basket-spalding-tf-1000-legacy-pro-2020-taille-7_2026.jpg"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 18,
+  rating: 4.4,
+  brand: "Spalding",
+  condition: "NEW",
+  tags: ["basketball", "ballon"],
+  specifications: {}
+},
+{
+  id: "sport-6",
+  name: "Chaussures de Running Nike Air Zoom",
+  description: "Chaussures légères avec amorti optimal pour longues distances",
+  price: 89000,
+  imageUrls: ["https://th.bing.com/th/id/OIP.81whec9gozIMqk7GQPGgYwHaHa?w=172&h=180&c=7&r=0&o=7&dpr=1.5&pid=1.7&rm=3"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 22,
+  rating: 4.8,
+  brand: "Nike",
+  condition: "NEW",
+  tags: ["running", "chaussures"],
+  specifications: {}
+},
+{
+  id: "sport-7",
+  name: "Haltères Ajustables 10KG",
+  description: "Paires d’haltères réglables pour entraînement musculaire",
+  price: 75000,
+  imageUrls: ["https://media.cdnws.com/_i/127542/677/3718/78/haltere-hexagonale-10-kg-x1.jpeg"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 12,
+  rating: 4.7,
+  brand: "Domyos",
+  condition: "NEW",
+  tags: ["musculation", "haltères"],
+  specifications: {}
+},
+{
+  id: "sport-8",
+  name: "Vélo d’Appartement Magnétique",
+  description: "Vélo avec résistance réglable pour cardio à domicile",
+  price: 185000,
+  imageUrls: ["https://contents.mediadecathlon.com/m15561702/k$17934290824b2447a57f7bcc69e5581c/sq/velo-dappartement-magnetique-zipro-boost-pour-fitness-et-cardio.jpg?format=auto&f=800x0"],
+  subCategoryId: "68ee26ea8256e07e8ce7a422",
+  vendorId: userData.id,
+  stock: 7,
+  rating: 4.6,
+  brand: "Care Fitness",
+  condition: "NEW",
+  tags: ["cardio", "vélo"],
+  specifications: {}
+}
 
-      setStats({
-        totalProducts,
-        totalRevenue,
-        averageRating: Math.round(averageRating * 10) / 10,
-      });
+        ];
+
+        setProducts(mockProducts);
+
+        // Calculer les statistiques avec les données de démonstration
+        const totalProducts = mockProducts.length;
+        const totalRevenue = mockProducts.reduce(
+          (sum, product) => sum + product.price * Math.floor(Math.random() * 5 + 3),
+          0
+        );
+        const averageRating =
+          mockProducts.reduce((sum, product) => sum + product.rating, 0) / totalProducts;
+
+        setStats({
+          totalProducts,
+          totalRevenue,
+          averageRating: Math.round(averageRating * 10) / 10,
+        });
+      } else {
+        setProducts(vendorProducts);
+
+        // Calculer les statistiques avec les données réelles
+        const totalProducts = vendorProducts.length;
+        const totalRevenue = vendorProducts.reduce(
+          (sum: number, product: Product) => sum + product.price * (10 - product.stock),
+          0
+        );
+        const averageRating =
+          vendorProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
+          (totalProducts || 1);
+
+        setStats({
+          totalProducts,
+          totalRevenue,
+          averageRating: Math.round(averageRating * 10) / 10,
+        });
+      }
     } catch (error) {
       console.error("Erreur chargement dashboard:", error);
     } finally {
