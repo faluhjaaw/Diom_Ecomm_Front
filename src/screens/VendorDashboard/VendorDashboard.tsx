@@ -51,20 +51,8 @@ export const VendorDashboard = (): JSX.Element => {
         (product: Product) => product.vendorId === userData.id
       );
 
-      // Récupérer les produits ajoutés localement
-      const localProductsStr = localStorage.getItem("vendorProducts");
-      const localProducts = localProductsStr ? JSON.parse(localProductsStr) : [];
-
-      // Filtrer les produits locaux pour ce vendeur uniquement
-      const vendorLocalProducts = localProducts.filter(
-        (product: Product) => product.vendorId === userData.id
-      );
-
-      // Combiner les produits de l'API et du localStorage
-      const combinedProducts = [...vendorProducts, ...vendorLocalProducts];
-
-      // Si le vendeur n'a pas de produits (ni de l'API ni du localStorage), créer des données de démonstration
-      if (combinedProducts.length === 0) {
+      // Si le vendeur n'a pas de produits, créer des données de démonstration
+      if (vendorProducts.length === 0) {
         const mockProducts: Product[] = [
           {
   id: "sport-1",
@@ -280,17 +268,16 @@ export const VendorDashboard = (): JSX.Element => {
           totalOrders: mockOrders.length,
         });
       } else {
-        // Utiliser les produits combinés (API + localStorage)
-        setProducts(combinedProducts);
+        setProducts(vendorProducts);
 
-        // Calculer les statistiques avec les données réelles (produits combinés)
-        const totalProducts = combinedProducts.length;
-        const totalRevenue = combinedProducts.reduce(
+        // Calculer les statistiques avec les données réelles
+        const totalProducts = vendorProducts.length;
+        const totalRevenue = vendorProducts.reduce(
           (sum: number, product: Product) => sum + product.price * (10 - product.stock),
           0
         );
         const averageRating =
-          combinedProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
+          vendorProducts.reduce((sum: number, product: Product) => sum + product.rating, 0) /
           (totalProducts || 1);
 
         setStats({
